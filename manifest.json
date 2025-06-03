@@ -1,0 +1,23 @@
+{
+  "name": "Odak",
+  "short_name": "Odak",
+  "description": "A clean and simple writing tool",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f8f5f0",
+  "theme_color": "#f8f5f0",
+  "icons": [
+    {
+      "src": "odak.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "odak.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+} 

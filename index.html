@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!-- 
+  Odak.app is a simple, clean, and distraction-free writing app designed to help your thoughts flow without interruption—no ads, no servers, no clutter. Everything is stored locally on your device, and you can save, edit, and download your writings as Markdown files.
+  Version 1.0
+  Author: Araz Gholami @arazgholami
+  Email: contact@arazgholami.com
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odak.app - Writing Tool</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="odak-icon.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v1.0">
+</head>
+<body>
+  <div id="app">
+    <div id="toolbar">
+      <button id="fullscreen-btn" title="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
+      <button id="list-btn" title="Your Writings"><i class="fas fa-list"></i></button>
+      <button id="sound-btn" title="Volume Control"><i class="fas fa-volume-up"></i></button>
+      <button id="settings-btn" title="Settings"><i class="fas fa-cog"></i></button>
+      <button id="manual-btn" title="Manual"><i class="fas fa-book"></i></button>
+      <button id="info-btn" title="Info"><i class="fas fa-info-circle"></i></button>
+      <button id="load-btn" title="Load MD File"><i class="fas fa-file-upload"></i></button>
+      <button id="download-btn" title="Download as MD"><i class="fas fa-download"></i></button>
+    </div>
+    
+    <div id="volume-popup" class="popup hidden">
+      <div class="volume-control">
+        <input type="range" id="volume-slider" min="0" max="100" value="50" class="volume-slider">
+        <div class="volume-label">Volume: <span id="volume-value">50%</span></div>
+      </div>
+    </div>
+
+    <div id="editor"></div>
+    
+    <div id="formatting-popup" class="hidden">
+      <button id="format-bold" title="Bold"><i class="fas fa-bold"></i></button>
+      <button id="format-italic" title="Italic"><i class="fas fa-italic"></i></button>
+      <button id="format-underline" title="Underline"><i class="fas fa-underline"></i></button>
+      <button id="format-h1" title="Heading 1">H1</button>
+      <button id="format-h2" title="Heading 2">H2</button>
+      <button id="format-h3" title="Heading 3">H3</button>
+      <button id="format-quote" title="Quote"><i class="fas fa-quote-right"></i></button>
+      <button id="format-link" title="Link"><i class="fas fa-link"></i></button>
+      <button id="format-unlink" title="Remove Link"><i class="fas fa-unlink"></i></button>
+    </div>
+
+    <div id="list-popup" class="popup hidden">
+      <div class="popup-header">
+        <button id="download-all-btn" class="btn btn-dark">Download All</button>
+        <small>Double-Click for Rename</small>
+        <button id="close-list" class="close-popup"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="documents-list"></div>
+    </div>
+    
+    <div id="settings-popup" class="popup hidden">
+      <div class="popup-header">
+        <h3>Settings</h3>
+        <button id="close-settings" class="close-popup"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="settings-content">
+        <div class="settings-section">
+          <div class="settings-row">
+            <label for="font-family-select">Font Family</label>
+            <select id="font-family-select" class="settings-control"></select>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <label for="font-size-slider">Font Size: <span id="font-size-value">Default</span></label>
+          <div class="font-size-slider-container">
+            <input type="range" id="font-size-slider" min="50" max="200" value="120" class="settings-slider">
+            <div class="font-size-marker"></div>
+          </div>
+        </div>
+        
+        <div class="settings-section">
+          <div class="settings-row">
+            <label for="editor-width-input">Editor Width</label>
+            <div class="width-input-container">
+              <input type="number" id="editor-width-input" class="settings-control" value="830" min="400" max="1600">
+              <span class="unit-label">px</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-row">
+            <label for="theme-toggle">Theme</label>
+            <div class="theme-toggle-container">
+              <button id="theme-toggle" class="theme-toggle-btn">
+                <i class="fas fa-moon"></i> Dark Mode
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-row">
+            <label for="background-select">Background</label>
+            <div class="background-options">
+              <div class="background-option" id="default-bg">
+                <span>Default</span>
+              </div>
+              <div class="background-option hidden" id="custom-bg">
+                <span>Custom</span>
+              </div>
+              <button id="upload-bg-btn" class="btn btn-sm btn-outline-secondary mt-2">
+                <i class="fas fa-upload"></i> Upload Custom Background
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="manual-popup" class="popup hidden">
+      <div class="popup-header">
+        <h3>Manual</h3>
+        <button id="close-manual" class="close-popup"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="manual-content" style="padding: 20px; overflow-y: auto; max-height: 60vh;">
+        <div class="manual-section">
+          <strong>Headers:</strong> <code># H1</code>, <code>## H2</code>, <code>### H3</code>, <code>#### H4</code>, <code>##### H5</code>, <code>###### H6</code>
+        </div>
+        
+        <div class="manual-section">
+          <strong>Text Formatting:</strong> <code>**bold**</code>, <code>*italic*</code>, <code>__underline__</code>, <code>`code`</code>
+        </div>
+        
+        <div class="manual-section">
+          <strong>Lists:</strong> <code>- unordered item</code>, <code>1. ordered item</code>
+        </div>
+        
+        <div class="manual-section">
+          <strong>Checkboxes:</strong> <code>- [ ] unchecked</code>, <code>- [x] checked</code>
+        </div>
+        
+        <div class="manual-section">
+          <strong>Links:</strong> <code>[text](url)</code>
+        </div>
+        
+        <div class="manual-section">
+          <strong>Images:</strong> <code>![alt text](image url)</code>
+        </div>
+        
+        <div class="manual-section">
+          <strong>Quotes:</strong> <code>> quote text</code>
+        </div>
+        
+        <div class="manual-section">
+          <strong>Horizontal Line:</strong> <code>---</code>
+        </div>
+      </div>
+    </div>
+
+    <div id="info-popup" class="popup hidden">
+      <div class="popup-header">
+        <h3>Welcome to Odak.app</h3>
+        <button id="close-info" class="close-popup"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="info-content" style="padding: 20px; overflow-y: auto; max-height: 60vh;">
+        <div class="info-section">
+          <p><a href="https://odak.app" class="main-link">Odak.app</a> is a simple, clean, and distraction-free writing app designed to help your thoughts flow without interruption—no ads, no servers, no clutter. Everything is stored locally on your device, and you can save, edit, and download your writings as Markdown files.</p>
+          <p class="mt-3">You can find a complete guide to Markdown formatting in the <strong>Manual</strong>, accessible from the left toolbar.</p>
+          <p>Have something to say? <a href="mailto:contact@arazgholami.com" target="_blank" class="main-link">Contact me</a> and I'll add it to the app.</p>
+        </div>
+        <div class="info-section text-center mt-4">
+          <button id="lets-go-btn" class="btn btn-dark">Let's Go</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="status-bar">
+      <div class="status-left">
+        <a href="https://odak.app" class="logo-link">
+          <img src="./odak.png" alt="Odak Logo" class="logo">
+          <span><section class="title">Odak.app</section><small class="author"><br>Reimagined by Araz Gholami</small></span>
+        </a>
+        <a href="https://github.com/arazgholami/odak.app" target="_blank" class="status-link">Github</a>
+        <a href="mailto:contact@arazgholami.com" target="_blank" class="status-link">Contact</a>
+        <a href="https://buymeacoffee.com/arazgholami" target="_blank" class="status-link">Donate</a>
+      </div>
+      <div class="status-right">
+        <span class="status-link formatting-shortcuts" style="font-size: 0.8rem; color: #888;">
+          Exit current tag: <code>&#8680;</code> Revert to markdown: <code>Backspace</code>
+        </span>
+        <div id="counter"></div>
+        <button id="new-btn" class="action-btn">New</button>
+        <button id="save-btn" class="action-btn">Save</button>
+      </div>
+    </div>
+  </div>
+  <input type="file" id="file-input" accept=".md,.txt" style="display: none;">
+  <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="draggable-image.js?v1.0"></script>
+  <script src="wysiwyg-markdown-editor.js?v1.0"></script>
+  <script src="script.js?ver=1"></script>
+</body>
+</html>
