@@ -1,30 +1,72 @@
-# Odak.app
-Odak.app is a simple, clean, and distraction-free writing app with **real-time rendering markdown support** designed to help your thoughts flow without interruption—no ads, no servers, no clutter. Everything is stored locally on your device, and you can write, save, edit, and download your writings as Markdown files.
-<br>Version: 1.0.0<br><br>
-Try it for free: [Odak.app](https://odak.app)
-<br><br>
-<small>Powered by [WYSIWYG Markdown Editor](https://github.com/arazgholami/markdown-editor/)</small>
+<p align="center">
+  <img src="odak.svg" alt="Odak Logo" height="64"/>
+  <h1 align="center" style="display:inline">Odak.app</h1>
+</p>
 
-## Features
-* **Distraction-Free UI** Hides toolbars while typing to keep you odaked on your content with Optional nostalgic typewriter sounds
-* **Markdown Support** - Import and Export your documents as .md files
-* **Local Storage** - All your writings are stored on your device with no external servers
-* **Dark Mode** - Switch between light and dark themes for comfortable writing in any lighting condition
-* **Text Formatting** - Format text with bold, italic, underline, headings, blockquotes, and links
-* **Multilingual Support** - Automatic detection of text direction for left-to-right and right-to-left languages
-* **Customizable UI** - Adjust font family, font size, and editor width to suit your preferences
-* **Custom Backgrounds** - Upload your own background images for a personalized writing experience
-* **Offline Access** - Fully functional offline with PWA support for installation on your device
-<br><br>
-![Odak](screenshot.png)
-<br><br>
-# Contribution
-You're welcome to help with anything.
+<p align="center">
+  <strong>Distraction-free Markdown writing app, fully offline and local-first.</strong><br>
+  <a href="https://odak.app">🌐 Try it online</a> | <a href="https://github.com/arazgholami/markdown-editor">Powered by WYSIWYG Markdown Editor</a>
+</p>
 
-<a href="https://buymeacoffee.com/arazgholami"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="200" /></a>
+<p align="center">
+  <a href="https://github.com/arazgholami/odak.app/releases">
+    <img src="https://img.shields.io/github/v/release/arazgholami/odak.app?label=version&color=brightgreen" alt="Version">
+  </a>
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT">
+  <img src="https://img.shields.io/github/last-commit/arazgholami/odak.app" alt="Last Commit">
+  <img src="https://img.shields.io/github/languages/top/arazgholami/odak.app" alt="Top Language">
+</p>
 
-# Licence
-MIT
+---
 
-# Contact
-Araz Gholami - Email: contact@arazgholami.com
+## ✍️ About
+
+**Odak.app** is a clean, minimalist, and privacy-respecting writing app with **live Markdown rendering**—built to keep you in the flow.  
+No accounts, no ads, no cloud, and no distractions. Everything is stored locally on your device.
+
+> Your thoughts deserve a focused space. Odak is it.
+
+---
+
+## 🚀 Features
+
+- 🧘‍♂️ **Distraction-Free UI** – Auto-hides toolbars as you type, with optional nostalgic typewriter sounds
+- 📝 **Live Markdown Support** – Create, edit, import, and export `.md` documents with real-time rendering
+- 💾 **Local-First Storage** – All content is saved on your device; no internet or servers required
+- 🌗 **Themes** – Switch between light, dark, and custom "Odak" theme for optimal writing comfort
+- 🎨 **Custom UI** – Adjust font family, size, and editor width to your taste
+- 🌐 **Multilingual** – Auto-detects RTL and LTR text for seamless international writing
+- 🖼 **Backgrounds** – Add custom background images for personalized inspiration
+- 💡 **Offline-Ready** – Works offline, with PWA support for installation on desktop or mobile
+
+---
+
+## 📷 Screenshot
+
+![Odak Screenshot](screenshot.png)
+
+---
+
+## 🤝 Contributing
+
+Pull requests and feedback are always welcome! Whether it's a typo fix or a major feature idea, your input is appreciated.
+
+> ☕ Like it? Support development:
+>  
+> <a href="https://buymeacoffee.com/arazgholami">
+>   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="200" alt="Buy Me A Coffee">
+> </a>
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 📬 Contact
+
+**Araz Gholami**  
+📧 Email: [contact@arazgholami.com](mailto:contact@arazgholami.com)  
+🌍 Website: [arazgholami.com](https://arazgholami.com)
