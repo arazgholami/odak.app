@@ -348,6 +348,8 @@ class MarkdownEditor {
     createCheckbox(content, textNode, checked = false) {
         const div = document.createElement('div');
         div.setAttribute('dir', 'auto');
+        div.style.display = 'inline-block'; // Add this line
+
         const checkbox = document.createElement('input');
         checkbox.setAttribute('dir', 'auto');
         checkbox.type = 'checkbox';
@@ -356,8 +358,11 @@ class MarkdownEditor {
             checkbox.checked = checked;
         }
 
+        const textSpan = document.createElement('span'); // Create span
+        textSpan.textContent = ' ' + content; // Move text to span
+
         div.appendChild(checkbox);
-        div.appendChild(document.createTextNode(' ' + content));
+        div.appendChild(textSpan); // Append span instead of text node
 
         const parent = textNode.parentNode;
         parent.replaceChild(div, textNode);
