@@ -1265,16 +1265,26 @@ function makePopupDraggable(popupId) {
 }
 
 function toggleToolbarAndStatusbar(mode = 'hide') {
-  if (mode == 'hide') {
-    toolbar.style.opacity = 0;
-    toolbar.style.left = '-100px';
-    statusBar.style.opacity = 0;
-    statusBar.style.bottom = '-100px';
+  if (window.innerWidth <= 768) {
+    if (mode == 'hide') {
+      toolbar.style.opacity = 0;
+      statusBar.style.opacity = 0;
+    } else {
+      toolbar.style.opacity = 1;
+      statusBar.style.opacity = 1;
+    }
   } else {
-    toolbar.style.opacity = 1;
-    toolbar.style.left = '5px';
-    statusBar.style.opacity = 1;
-    statusBar.style.bottom = '0';
+    if (mode == 'hide') {
+      toolbar.style.opacity = 0;
+      toolbar.style.left = '-100px';
+      statusBar.style.opacity = 0;
+      statusBar.style.bottom = '-100px';
+    } else {
+      toolbar.style.opacity = 1;
+      toolbar.style.left = '5px';
+      statusBar.style.opacity = 1;
+      statusBar.style.bottom = '0';
+    }
   }
 }
 
