@@ -678,7 +678,8 @@ datalist {
 }
 
 .logo {
-  height: 32px;
+  height: 24px;
+  vertical-align: sub;
   width: auto;
   margin-right: 8px;
   color: var(--logo-color)
