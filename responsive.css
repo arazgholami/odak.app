@@ -1,0 +1,429 @@
+/* Responsive CSS for Odak.app Mobile */
+@media (max-width: 945px) {
+  
+  /* Hide desktop toolbar and status bar */
+  #toolbar {
+    display: none !important;
+  }
+  
+  #status-bar {
+    display: none !important;
+  }
+  
+  /* App container adjustments */
+  #app {
+    padding-bottom: 70px; /* Space for bottom bar */
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* Editor mobile adjustments */
+  #editor {
+    padding: 20px 15px 30px 15px;
+    margin: 0;
+    max-width: 100%;
+    border: none;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: calc(var(--div-font-size, 1rem) * 0.9);
+  }
+  
+  /* Mobile bottom bar */
+  .mobile-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--toolbar-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 8px 10px;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  /* Bottom bar sections */
+  .bottom-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .bottom-bar-center {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .bottom-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Mobile buttons */
+  .mobile-btn {
+    background: none;
+    border: none;
+    color: var(--toolbar-color);
+    font-size: 1.1rem;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mobile-btn:hover,
+  .mobile-btn:active {
+    background-color: var(--button-hover);
+  }
+  
+  /* Primary action buttons */
+  .mobile-btn.primary {
+    background-color: var(--highlight-color);
+    color: var(--bg-color);
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    font-weight: 500;
+  }
+  
+  .mobile-btn.primary:hover {
+    background-color: var(--highlight-color-hover);
+  }
+  
+  /* Counter in mobile */
+  .mobile-counter {
+    font-size: 0.75rem;
+    color: #888;
+    margin: 0 8px;
+    white-space: nowrap;
+  }
+  
+  /* Popups mobile adjustments */
+  .popup {
+    width: 95vw;
+    max-width: 95vw;
+    max-height: 85vh;
+    margin: 0;
+    border-radius: 12px;
+  }
+  
+  .popup-header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .popup-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .popup-header small {
+    font-size: 0.75rem;
+    order: 3;
+    width: 100%;
+    margin-top: 4px;
+  }
+  
+  /* Settings popup mobile */
+  #settings-content {
+    padding: 16px;
+    max-height: 70vh;
+  }
+  
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .settings-row label {
+    min-width: auto;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .settings-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .theme-options {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .theme-btn {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    min-width: 0;
+  }
+  
+  .background-options {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .background-option {
+    width: 100%;
+    height: 80px;
+  }
+  
+  #upload-bg-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+  
+  /* Documents list mobile */
+  #documents-list {
+    padding: 12px;
+    max-height: 60vh;
+  }
+  
+  .document-item {
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .document-title {
+    width: 100%;
+    font-size: 1rem;
+    height: auto;
+    min-height: 24px;
+  }
+  
+  .document-date {
+    font-size: 0.8rem;
+    margin-right: 0;
+    align-self: flex-end;
+  }
+  
+  .document-actions {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+  }
+  
+  .document-actions button {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+  }
+  
+  /* Info popup mobile */
+  #info-content {
+    padding: 16px;
+    max-height: 70vh;
+  }
+  
+  #info-content p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  #manual-content {
+    margin-top: 20px;
+    zoom: 0.85;
+  }
+  
+  .manual-section {
+    margin-bottom: 8px;
+  }
+  
+  .manual-section div {
+    font-size: 0.85rem;
+  }
+  
+  .manual-section code {
+    font-size: 0.8rem;
+    padding: 2px 4px;
+  }
+  
+  /* Volume popup mobile */
+  #volume-popup {
+    width: 280px;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;
+  }
+  
+  /* Formatting popup mobile */
+  #formatting-popup {
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: 90vw;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px;
+  }
+  
+  #formatting-popup button {
+    font-size: 0.9rem;
+    padding: 6px 8px;
+    min-width: 36px;
+  }
+  
+  /* Confirmation dialog mobile */
+  .confirmation-dialog {
+    width: 90vw;
+    max-width: 90vw;
+  }
+  
+  .confirmation-dialog .popup-content {
+    padding: 16px;
+  }
+  
+  .confirmation-dialog p {
+    font-size: 0.9rem;
+  }
+  
+  .confirmation-buttons {
+    gap: 8px;
+  }
+  
+  .confirmation-buttons button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
+  /* Typography adjustments for mobile */
+  #editor h1 {
+    font-size: calc(var(--h1-font-size, 2rem) * 0.8) !important;
+  }
+  
+  #editor h2 {
+    font-size: calc(var(--h2-font-size, 1.5rem) * 0.85) !important;
+  }
+  
+  #editor h3 {
+    font-size: calc(var(--h3-font-size, 1.3rem) * 0.9) !important;
+  }
+  
+  #editor ul, #editor ol {
+    padding-left: 1.5em;
+  }
+  
+  #editor blockquote {
+    padding: 8px 8px 8px 12px;
+    margin: 0.8em 0;
+  }
+  
+  #editor code {
+    font-size: 0.85em;
+    padding: 1px 3px;
+  }
+  
+  /* iOS Safari specific adjustments */
+  @supports (-webkit-touch-callout: none) {
+    .mobile-bottom-bar {
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      height: calc(70px + env(safe-area-inset-bottom));
+    }
+    
+    #app {
+      padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
+    
+    #editor {
+      height: calc(100vh - 70px - env(safe-area-inset-bottom));
+    }
+    
+    #volume-popup {
+      bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+    
+    #formatting-popup {
+      bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+  }
+  
+  /* Landscape mode adjustments */
+  @media (orientation: landscape) and (max-height: 945px) {
+    .mobile-bottom-bar {
+      height: 60px;
+      padding: 6px 10px;
+    }
+    
+    .mobile-btn {
+      min-width: 36px;
+      height: 36px;
+      font-size: 1rem;
+    }
+    
+    .mobile-btn.primary {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+    }
+    
+    #app {
+      padding-bottom: 60px;
+    }
+    
+    #editor {
+      height: calc(100vh - 60px);
+      padding: 15px 12px;
+    }
+    
+    .popup {
+      max-height: 80vh;
+    }
+    
+    @supports (-webkit-touch-callout: none) {
+      .mobile-bottom-bar {
+        height: calc(60px + env(safe-area-inset-bottom));
+        padding-bottom: calc(6px + env(safe-area-inset-bottom));
+      }
+      
+      #app {
+        padding-bottom: calc(60px + env(safe-area-inset-bottom));
+      }
+      
+      #editor {
+        height: calc(100vh - 60px - env(safe-area-inset-bottom));
+      }
+    }
+  }
+  
+  /* Hide desktop-only elements */
+  .formatting-shortcuts,
+  .status-link {
+    display: none !important;
+  }
+  
+  /* Ensure mobile UI is touch-friendly */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  button, input, select, textarea {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
