@@ -5,8 +5,8 @@
   --highlight-color: #404040;
   --highlight-color-hover: #2A2A2A;
   --highlight-bg: rgba(64, 64, 64, 0.08);
-  --selection-bg: #F0F0F0;
-  --selection-text: #1A1A1A;
+  --selection-bg: #1A1A1A;
+  --selection-text: #F0F0F0;
   --code-bg: #F8F8F8;
   --placeholder-color: #737373;
   --link-color: #404040;

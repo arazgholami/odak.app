@@ -1,6 +1,6 @@
 /**
  * WYSIWYG Markdown Editor
- * v=1.3
+ * v=1.4
  * A lightweight, real-time markdown editor with live rendering and LTR-RTL support
  * Usage: MarkdownEditor.init('your-div-id');
  * Author: Araz Gholami @arazgholami
@@ -345,30 +345,28 @@ class MarkdownEditor {
         this.setCursorAtEnd(li);
     }
 
-    createCheckbox(content, textNode, checked = false) {
-        const div = document.createElement('div');
-        div.setAttribute('dir', 'auto');
-        div.style.display = 'inline-block'; // Add this line
-
-        const checkbox = document.createElement('input');
-        checkbox.setAttribute('dir', 'auto');
-        checkbox.type = 'checkbox';
-        if (checked) {
-            checkbox.setAttribute('checked', '');
-            checkbox.checked = checked;
-        }
-
-        const textSpan = document.createElement('span'); // Create span
-        textSpan.textContent = ' ' + content; // Move text to span
-
-        div.appendChild(checkbox);
-        div.appendChild(textSpan); // Append span instead of text node
-
-        const parent = textNode.parentNode;
-        parent.replaceChild(div, textNode);
-
-        this.setCursorAfter(div);
+createCheckbox(content, textNode, checked = false) {
+    const checkbox = document.createElement('input');
+    checkbox.setAttribute('dir', 'auto');
+    checkbox.type = 'checkbox';
+    if (checked) {
+        checkbox.setAttribute('checked', '');
+        checkbox.checked = checked;
     }
+
+    const textSpan = document.createElement('span');
+    textSpan.setAttribute('dir', 'auto');
+    textSpan.textContent = ' ' + content;
+
+    const parent = textNode.parentNode;
+    
+    // Insert checkbox and text span directly
+    parent.insertBefore(checkbox, textNode);
+    parent.insertBefore(textSpan, textNode);
+    parent.removeChild(textNode);
+
+    this.setCursorAfter(textSpan);
+}
 
     createLink(text, url, fullText, textNode) {
         const link = document.createElement('a');
