@@ -1,6 +1,6 @@
 /*
  * Odak.app is a clean, minimalist, and privacy-respecting writing app with live Markdown rendering—built to keep you in the flow. No accounts, no ads, no cloud, and no distractions. Everything is stored locally on your device.
- * v=1.2
+ * v=1.3
  * Author: Araz Gholami @arazgholami
  * Email: contact@arazgholami.com
  */
@@ -40,6 +40,7 @@ MarkdownEditor.init('editor', {
 
 const editor = document.getElementById('editor');
 const toolbar = document.getElementById('toolbar');
+const topbar = document.getElementById('topbar');
 const statusBar = document.getElementById('status-bar');
 const settingsPopup = document.getElementById('settings-popup');
 const counter = document.getElementById('counter');
@@ -586,7 +587,6 @@ function updateSoundButton() {
 }
 
 function createNewDocument(silent = false) {
-  console.log(silent);
   if (silent) {
     generateNewDocument()
   } else {
@@ -614,7 +614,6 @@ function generateNewDocument() {
 function saveCurrentDocumentContent() {
   if (!currentDocumentId) return;
   const content = editor.innerHTML;
-  console.log(content);
   let title = 'Untitled Document';
   const firstLine = editor.textContent.trim().split('\n')[0];
   if (firstLine) {
@@ -1442,4 +1441,8 @@ document.addEventListener('DOMContentLoaded', () => {
   infoBtn.addEventListener('click', toggleInfo);
   closeInfoBtn.addEventListener('click', closeInfoPopup);
   letsGoBtn.addEventListener('click', handleLetsGo);
+
+
+
+
 });
