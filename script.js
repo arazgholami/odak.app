@@ -1,6 +1,6 @@
 /*
  * Odak.app is a clean, minimalist, and privacy-respecting writing app with live Markdown rendering—built to keep you in the flow. No accounts, no ads, no cloud, and no distractions. Everything is stored locally on your device.
- * v=1.4
+ * v=1.5
  * Author: Araz Gholami @arazgholami
  * Email: contact@arazgholami.com
  */
