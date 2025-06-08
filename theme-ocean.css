@@ -1,0 +1,38 @@
+/* Ocean Theme */
+body[data-theme="ocean"] {
+  --bg-color: #000080;
+  --text-color: #E0FFFF;
+  --toolbar-bg: #000050;
+  --toolbar-color: #E0FFFF;
+  --button-hover: #0000A0;
+  --border-color: #0000CD;
+  --editor-border: #0000CD;
+  --editor-link-color: #ADD8E6;
+  --editor-link-hover: #87CEEB;
+  --editor-code-bg: #000050;
+  --editor-code-text: #E0FFFF;
+  --quote-border: #FF7F50;
+  --quote-background: #000070;
+  --popup-bg: #000080;
+  --highlight-color: #FF7F50;
+  --highlight-color-hover: #FF6347;
+  --selection-bg: #FF7F50;
+  --selection-text: #E0FFFF;
+  --logo-color: #E0FFFF;
+  --status-link-color: #E0FFFF;
+  --manual-code: #000050;
+  --btn-secondary-bg: #0000A0;
+  --btn-primary: #FF7F50;
+  --btn-primary-hover: #FF6347;
+  --author-color: #AFEEEE; /* PaleTurquoise */
+}
+
+body[data-theme="ocean"] #editor {
+  background-image: none; /* Or a subtle ocean-themed pattern */
+}
+
+body[data-theme="ocean"] .theme-btn[data-theme="ocean"] {
+  background-color: #000080;
+  color: #E0FFFF;
+  border: 1px solid #0000CD;
+}
