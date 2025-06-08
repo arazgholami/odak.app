@@ -1,0 +1,38 @@
+/* Forest Theme */
+body[data-theme="forest"] {
+  --bg-color: #2F4F2F;
+  --text-color: #F5F5DC;
+  --toolbar-bg: #253F25;
+  --toolbar-color: #F5F5DC;
+  --button-hover: #3E5E3E;
+  --border-color: #006400;
+  --editor-border: #006400;
+  --editor-link-color: #90EE90;
+  --editor-link-hover: #7CCD7C;
+  --editor-code-bg: #253F25;
+  --editor-code-text: #F5F5DC;
+  --quote-border: #A0522D;
+  --quote-background: #2A4A2A;
+  --popup-bg: #2F4F2F;
+  --highlight-color: #A0522D;
+  --highlight-color-hover: #8B4513;
+  --selection-bg: #A0522D;
+  --selection-text: #F5F5DC;
+  --logo-color: #F5F5DC;
+  --status-link-color: #F5F5DC;
+  --manual-code: #253F25;
+  --btn-secondary-bg: #3E5E3E;
+  --btn-primary: #A0522D;
+  --btn-primary-hover: #8B4513;
+  --author-color: #D2B48C; /* Tan */
+}
+
+body[data-theme="forest"] #editor {
+  background-image: none; /* Or a subtle forest-themed pattern */
+}
+
+body[data-theme="forest"] .theme-btn[data-theme="forest"] {
+  background-color: #2F4F2F;
+  color: #F5F5DC;
+  border: 1px solid #006400;
+}
