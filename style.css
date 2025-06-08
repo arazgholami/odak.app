@@ -1026,22 +1026,3 @@ body {
 #documents-list::-webkit-scrollbar-thumb:hover {
   background: var(--button-hover);
 }
-
-/* Styles for new theme buttons */
-.theme-btn[data-theme="forest"] {
-  background-color: #2F4F2F; /* Forest theme background */
-  color: #F5F5DC; /* Forest theme text */
-  border: 1px solid #006400; /* Forest theme border */
-}
-
-.theme-btn[data-theme="ocean"] {
-  background-color: #000080; /* Ocean theme background */
-  color: #E0FFFF; /* Ocean theme text */
-  border: 1px solid #0000CD; /* Ocean theme border */
-}
-
-.theme-btn[data-theme="sunset"] {
-  background-color: #483D8B; /* Sunset theme background */
-  color: #FED8B1; /* Sunset theme text */
-  border: 1px solid #800080; /* Sunset theme border */
-}

@@ -150,7 +150,7 @@ function loadPreferences() {
     updateSoundButton();
   }  
   const savedTheme = localStorage.getItem('odak_theme');
-  if (savedTheme && ['light', 'dark', 'odak', 'forest', 'ocean', 'sunset'].includes(savedTheme)) {
+  if (savedTheme && ['light', 'dark', 'odak'].includes(savedTheme)) {
     currentTheme = savedTheme;
   } else {
     // Migrate from old theme system if needed
@@ -264,7 +264,7 @@ function toggleFullscreen() {
 }
 
 function setTheme(theme) {
-  if (['light', 'dark', 'odak', 'forest', 'ocean', 'sunset'].includes(theme)) {
+  if (['light', 'dark', 'odak'].includes(theme)) {
     currentTheme = theme;
     localStorage.setItem('odak_theme', theme);
     applyTheme();
