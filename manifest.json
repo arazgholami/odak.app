@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#f8f5f0",
   "theme_color": "#f8f5f0",
-  "version": "1.7",
+  "version": "2.0",
   "icons": [
     {
       "src": "./odak-icon-192.png",

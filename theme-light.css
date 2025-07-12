@@ -1,7 +1,8 @@
 :root {
-  --bg-color: #FFFFFF;
+  --bg-color: #dddddd;
   --text-color: #1A1A1A;
-  --border-color: #E5E5E5;
+  --border-color: #d9d9d9;
+  --hr-color: #969696;
   --highlight-color: #404040;
   --highlight-color-hover: #2A2A2A;
   --highlight-bg: rgba(64, 64, 64, 0.08);
@@ -11,7 +12,7 @@
   --placeholder-color: #737373;
   --link-color: #404040;
   --author-color: #666666;
-  --editor-border: #E5E5E5;
+  --editor-border: #d0d0d0;
   --toolbar-bg: #FAFAFA;
   --toolbar-color: #1A1A1A;
   --popup-bg: #F8F8F8;

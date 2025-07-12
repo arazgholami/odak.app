@@ -145,8 +145,8 @@ function loadPreferences() {
   } else {
     
     soundVolume = 0.2;
-    document.getElementById('volume-slider').value = 20;
-    document.getElementById('volume-value').textContent = '20%';
+    document.getElementById('volume-slider').value = 15;
+    document.getElementById('volume-value').textContent = '15%';
     updateSoundButton();
   }  
   const savedTheme = localStorage.getItem('odak_theme');

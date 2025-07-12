@@ -319,7 +319,6 @@ datalist {
   padding-left: 30px;
   padding-right: 30px;
   padding-bottom: 50px;
-  border: 1px solid var(--border-color);
 }
 
 #editor a {
@@ -340,7 +339,7 @@ datalist {
 #editor:empty:before,
 #editor[contenteditable="true"]:empty:before {
   content: attr(placeholder);
-  color: #888;
+  color: var(--placeholder-color);
   font-style: italic;
   pointer-events: none;
   display: block;
@@ -357,16 +356,19 @@ datalist {
   font-size: var(--h1-font-size, 2rem) !important;
   margin-top: 0px;
   margin-bottom: 0.1em;
+  line-height: 40px;
 }
 
 #editor h2 {
   font-size: var(--h2-font-size, 1.5rem) !important;
   margin-bottom: 0.1em;
+  line-height: 35px;
 }
 
 #editor h3 {
   font-size: var(--h3-font-size, 1.3rem) !important;
   margin-bottom: 0.1em;
+  line-height: 30px;
 }
 
 #editor h4 {
@@ -473,7 +475,7 @@ datalist {
 /* Horizontal Line */
 #editor hr {
   border: none;
-  border-top: 2px solid var(--border-color);
+  border-top: 2px solid var(--hr-color);
   margin: 0.5em 0;
 }
 
@@ -681,14 +683,6 @@ datalist {
   text-decoration: none;
   color: var(--text-color);
   margin-right: 20px;
-}
-
-.logo {
-  height: 24px;
-  vertical-align: sub;
-  width: auto;
-  margin-right: 8px;
-  color: var(--logo-color)
 }
 
 .status-link {
@@ -966,7 +960,7 @@ body {
 }
 
 #upload-bg-btn {
-  margin: 10px 0;
+  margin: 10px 0 0;
 }
 
 #manual-content {
@@ -1025,4 +1019,11 @@ body {
 
 #documents-list::-webkit-scrollbar-thumb:hover {
   background: var(--button-hover);
+}
+
+svg {
+  width: 40px;
+  height: auto;
+  margin-right: 8px;
+  fill: blue;
 }
