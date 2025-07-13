@@ -145,8 +145,8 @@ function loadPreferences() {
   } else {
     
     soundVolume = 0.2;
-    document.getElementById('volume-slider').value = 15;
-    document.getElementById('volume-value').textContent = '15%';
+    document.getElementById('volume-slider').value = 70;
+    document.getElementById('volume-value').textContent = '70%';
     updateSoundButton();
   }  
   const savedTheme = localStorage.getItem('odak_theme');
@@ -225,11 +225,11 @@ function playSound(type) {
     
     const randomIndex = Math.floor(Math.random() * sounds.key.length);
     const sound = sounds.key[randomIndex].cloneNode();
-    sound.volume = soundVolume;
+    sound.volume = soundVolume / 2;
     sound.play();
   } else if (sounds[type]) {
     const sound = sounds[type].cloneNode();
-    sound.volume = soundVolume;
+    sound.volume = soundVolume / 2;
     sound.play();
   }
 }

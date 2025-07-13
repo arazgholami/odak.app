@@ -215,21 +215,21 @@ class MarkdownEditor {
             { regex: /__(.+?)__/, handler: (match) => this.replaceInlineMarkdown(text, match, 'u', range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
             { regex: /^(\d+)\.\s(.+)$/, handler: (match) => this.createOrderedListItem(match[2], range.startContainer), minPos: (match) => match[1].length + 2 },
             { regex: /^-\s(?!\[)(.+)$/, handler: (match) => this.createListItem(match[1], range.startContainer), minPos: 2 }
-            ];
+        ];
 
-            for (const pattern of patterns) {
-                const match = text.match(pattern.regex);
-                if (match) {
-                    const minPos = typeof pattern.minPos === 'function' ? pattern.minPos(match) : pattern.minPos;
-                    if (cursorPos > minPos) {
-                        pattern.handler(match);
-                        this.isProcessing = false;
-                        return;
-                    }
+        for (const pattern of patterns) {
+            const match = text.match(pattern.regex);
+            if (match) {
+                const minPos = typeof pattern.minPos === 'function' ? pattern.minPos(match) : pattern.minPos;
+                if (cursorPos > minPos) {
+                    pattern.handler(match);
+                    this.isProcessing = false;
+                    return;
                 }
             }
+        }
 
-            this.isProcessing = false;
+        this.isProcessing = false;
     }
 
     replaceWithElement(tagName, content, textNode) {
@@ -395,7 +395,7 @@ class MarkdownEditor {
         div.innerHTML = '<br>';
         parent.insertBefore(div, hr.nextSibling);
 
-        this.setCursorAtEnd(hr);
+        this.setCursorAtEnd(div);
     }
 
     handleBackspace(e) {
