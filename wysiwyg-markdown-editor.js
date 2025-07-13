@@ -1,6 +1,6 @@
 /**
  * WYSIWYG Markdown Editor
- * v=2.0
+ * v=2.1
  * A lightweight, real-time markdown editor with live rendering and LTR-RTL support
  * Usage: MarkdownEditor.init('your-div-id');
  * Author: Araz Gholami @arazgholami
