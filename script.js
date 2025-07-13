@@ -225,11 +225,11 @@ function playSound(type) {
     
     const randomIndex = Math.floor(Math.random() * sounds.key.length);
     const sound = sounds.key[randomIndex].cloneNode();
-    sound.volume = soundVolume / 2;
+    sound.volume = soundVolume / 3;
     sound.play();
   } else if (sounds[type]) {
     const sound = sounds[type].cloneNode();
-    sound.volume = soundVolume / 2;
+    sound.volume = soundVolume / 3;
     sound.play();
   }
 }
