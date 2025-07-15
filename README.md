@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="odak.svg" alt="Odak Logo" height="64"/>
+  <img src="https://github.com/arazgholami/odak.app/blob/main/assets/images/odak.svg" alt="Odak Logo" height="64"/>
   <h1 align="center" style="display:inline">Odak.app</h1>
 </p>
 
 <p align="center">
   <strong>Distraction-free Markdown writing app, fully offline and local-first.</strong><br>
-  <a href="https://odak.app">Try it online</a> | <a href="https://github.com/arazgholami/markdown-editor">Powered by WYSIWYG Markdown Editor</a>
+  <a href="https://odak.app">Try it now!</a> | <a href="https://github.com/arazgholami/markdown-editor">Powered by WYSIWYG Markdown Editor</a>
 </p>
 
 <p align="center">
