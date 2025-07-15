@@ -76,17 +76,17 @@ editor.addEventListener('keydown', handleKeyDown);
 
 const sounds = {
   key: [
-    new Audio('sounds/key-new-01.mp3'),
-    new Audio('sounds/key-new-02.mp3'),
-    new Audio('sounds/key-new-03.mp3'),
-    new Audio('sounds/key-new-04.mp3'),
-    new Audio('sounds/key-new-05.mp3')
+    new Audio('./assets/sounds/type-machine/key-new-01.mp3'),
+    new Audio('./assets/sounds/type-machine/key-new-02.mp3'),
+    new Audio('./assets/sounds/type-machine/key-new-03.mp3'),
+    new Audio('./assets/sounds/type-machine/key-new-04.mp3'),
+    new Audio('./assets/sounds/type-machine/key-new-05.mp3')
   ],
-  space: new Audio('sounds/space-new.mp3'),
-  backspace: new Audio('sounds/backspace.mp3'),
-  return: new Audio('sounds/return-new.mp3'),
-  scrollUp: new Audio('sounds/scrollUp.mp3'),
-  scrollDown: new Audio('sounds/scrollDown.mp3')
+  space: new Audio('./assets/sounds/type-machine/space-new.mp3'),
+  backspace: new Audio('./assets/sounds/type-machine/backspace.mp3'),
+  return: new Audio('./assets/sounds/type-machine/return-new.mp3'),
+  scrollUp: new Audio('./assets/sounds/type-machine/scrollUp.mp3'),
+  scrollDown: new Audio('./assets/sounds/type-machine/scrollDown.mp3')
 };
 
 function init() {
