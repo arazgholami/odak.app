@@ -768,7 +768,7 @@ datalist {
 
 .author {
   font-size: 11px;
-  margin: -12px 0 -4px 0px;
+  margin: -3px 0 -4px 0px;
   display: block;
   color: var(--author-color);
 }
