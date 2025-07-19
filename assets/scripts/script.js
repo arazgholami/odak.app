@@ -560,8 +560,8 @@ function toggleSound() {
     volumePopup.classList.remove('hidden');
     
     const btnRect = soundBtn.getBoundingClientRect();
-    volumePopup.style.left = (btnRect.right + 115) + 'px';
-    volumePopup.style.top = (btnRect.top + 10) + 'px';
+    volumePopup.style.left = (btnRect.right + 100) + 'px';
+    volumePopup.style.top = (btnRect.top + 20) + 'px';
   } else {
     volumePopup.classList.add('hidden');
   }
@@ -574,7 +574,7 @@ function updateSoundButton() {
     soundEnabled = true;
     if (soundVolume < 0.1) {
       iconClass = 'fa-volume-off';
-    } else if (soundVolume < 0.5) {
+    } else if (soundVolume < 0.4) {
       iconClass = 'fa-volume-down';
     } else {
       iconClass = 'fa-volume-up';

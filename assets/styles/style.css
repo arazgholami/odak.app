@@ -108,10 +108,10 @@ body[data-theme="odak"] #editor {
 #volume-popup {
   position: fixed;
   background-color: var(--popup-bg);
-  border-radius: 8px;
+  border-radius: 0 8px 8px 0;
   border: 1px solid var(--border-color);
   padding: 15px;
-  z-index: 200;
+  z-index: 2;
   width: 200px;
 }
 
