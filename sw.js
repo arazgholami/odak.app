@@ -1,6 +1,6 @@
 // Service Worker for Odak App
 
-const CACHE_NAME = 'odak-app-cache-v=2.3';
+const CACHE_NAME = 'odak-app-cache-v=2.4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -14,6 +14,8 @@ const urlsToCache = [
   '/manifest.json',
   '/assets/fonts/Vazirmatn-Regular.woff2',
   '/assets/fonts/Vazirmatn-Bold.woff2',
+  '/assets/webfonts/fa-solid-900.ttf',
+  '/assets/webfonts/fa-solid-900.woff2',
   '/assets/sounds/type-machine/key-new-01.mp3',
   '/assets/sounds/type-machine/key-new-02.mp3',
   '/assets/sounds/type-machine/key-new-03.mp3',
@@ -26,9 +28,9 @@ const urlsToCache = [
   '/assets/sounds/type-machine/scrollDown.mp3',
   '/assets/scripts/draggable-image.js',
   '/assets/scripts/wysiwyg-markdown-editor.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js'
+  '/assets/vendor/bootstrap.min.css',
+  '/assets/vendor/font-awesome.min.css',
+  '/assets/vendor/bootstrap.bundle.min.js'
 ];
 
 // Install event - cache all static assets
