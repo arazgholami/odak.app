@@ -1,6 +1,6 @@
 /*
  * Odak.app is a clean, minimalist, and privacy-respecting writing app with live Markdown rendering—built to keep you in the flow. No accounts, no ads, no cloud, and no distractions. Everything is stored locally on your device.
- * v=2.4
+ * v=2.5
  * Author: Araz Gholami @arazgholami
  * Email: contact@arazgholami.com
  */
@@ -9,7 +9,8 @@ let currentDocumentId = null;
 let isTyping = false;
 let typingTimer = null;
 let soundEnabled = true;
-let soundVolume = 0.5; 
+let soundVolume = 0.5;
+let soundType = 'type-machine'; 
 let currentTheme = 'light'; // Default theme
 let isFullscreen = false;
 let documents = {};
@@ -17,7 +18,7 @@ let customBackground = null;
 
 let fontFamily = 'Vazir'; 
 let fontSize = 120; 
-let editorWidth = 830; 
+let editorWidth = 65; // Default width in percentage
 let systemFonts = []; 
 let useCustomBg = false; 
 
@@ -76,18 +77,27 @@ editor.addEventListener('keydown', handleKeyDown);
 
 const sounds = {
   key: [
-    new Audio('./assets/sounds/type-machine/key-new-01.mp3'),
-    new Audio('./assets/sounds/type-machine/key-new-02.mp3'),
-    new Audio('./assets/sounds/type-machine/key-new-03.mp3'),
-    new Audio('./assets/sounds/type-machine/key-new-04.mp3'),
-    new Audio('./assets/sounds/type-machine/key-new-05.mp3')
+    new Audio(), new Audio(), new Audio(), new Audio(), new Audio()
   ],
-  space: new Audio('./assets/sounds/type-machine/space-new.mp3'),
-  backspace: new Audio('./assets/sounds/type-machine/backspace.mp3'),
-  return: new Audio('./assets/sounds/type-machine/return-new.mp3'),
-  scrollUp: new Audio('./assets/sounds/type-machine/scrollUp.mp3'),
-  scrollDown: new Audio('./assets/sounds/type-machine/scrollDown.mp3')
+  space: new Audio(),
+  backspace: new Audio(),
+  return: new Audio(),
+  scrollUp: new Audio(),
+  scrollDown: new Audio()
 };
+
+function updateSoundPaths() {
+  sounds.key[0].src = `./assets/sounds/${soundType}/key-new-01.mp3`;
+  sounds.key[1].src = `./assets/sounds/${soundType}/key-new-02.mp3`;
+  sounds.key[2].src = `./assets/sounds/${soundType}/key-new-03.mp3`;
+  sounds.key[3].src = `./assets/sounds/${soundType}/key-new-04.mp3`;
+  sounds.key[4].src = `./assets/sounds/${soundType}/key-new-05.mp3`;
+  sounds.space.src = `./assets/sounds/${soundType}/space-new.mp3`;
+  sounds.backspace.src = `./assets/sounds/${soundType}/backspace.mp3`;
+  sounds.return.src = `./assets/sounds/${soundType}/return-new.mp3`;
+  sounds.scrollUp.src = `./assets/sounds/${soundType}/scrollUp.mp3`;
+  sounds.scrollDown.src = `./assets/sounds/${soundType}/scrollDown.mp3`;
+}
 
 function init() {
   // Register service worker for offline functionality
@@ -171,12 +181,14 @@ function loadPreferences() {
     fontSize = parseInt(savedFontSize);
   }
   document.getElementById('font-size-slider').value = fontSize;
-  updateFontSizeLabel();  
+  
   const savedEditorWidth = localStorage.getItem('odak_editor_width');
   if (savedEditorWidth !== null) {
     editorWidth = parseInt(savedEditorWidth);
-    document.getElementById('editor-width-input').value = editorWidth;
-  }  
+  }
+  document.getElementById('editor-width-slider').value = editorWidth;
+  document.getElementById('editor-width-value').textContent = editorWidth + '%';
+
   try {
     const savedCustomBackground = localStorage.getItem('odak_custom_background');
     const savedUseCustomBg = localStorage.getItem('odak_use_custom_bg');
@@ -198,7 +210,14 @@ function loadPreferences() {
     
     localStorage.removeItem('odak_custom_background');
     localStorage.setItem('odak_use_custom_bg', 'false');
-  }  
+  }
+
+  const savedSoundType = localStorage.getItem('odak_sound_type');
+  if (savedSoundType && ['type-machine', 'pen'].includes(savedSoundType)) {
+    soundType = savedSoundType;
+  }
+  document.getElementById('sound-type-select').value = soundType;
+  updateSoundPaths();  
   applySettings();
 }
 
@@ -289,7 +308,7 @@ function applyTheme() {
   // Update theme stylesheet
   const themeLink = document.querySelector('link[href^="./assets/styles/theme-"]');
   if (themeLink) {
-    themeLink.href = `./assets/styles/theme-${currentTheme}.css?v=2.4`;
+    themeLink.href = `./assets/styles/theme-${currentTheme}.css?v=2.5`;
   }
   
   // Update UI elements
@@ -394,15 +413,16 @@ function applySettings() {
   document.documentElement.style.setProperty('--base-font-size', fontSize + '%');
   editor.style.fontSize = 'var(--base-font-size)';
   
+  // Set editor width
+  document.documentElement.style.setProperty('--editor-width', editorWidth + '%');
+  editor.style.width = 'var(--editor-width)';
+  
   // Calculate relative sizes
   const baseSize = fontSize / 100;
   document.documentElement.style.setProperty('--h1-font-size', `calc(1.802rem * ${baseSize})`);
   document.documentElement.style.setProperty('--h2-font-size', `calc(1.602rem * ${baseSize})`);
   document.documentElement.style.setProperty('--h3-font-size', `calc(1.266rem * ${baseSize})`);
   document.documentElement.style.setProperty('--div-font-size', `calc(1rem * ${baseSize})`);
-  
-  // Set editor width
-  editor.style.maxWidth = editorWidth + 'px';
   
   // Apply font sizes to all elements
   const allElements = editor.querySelectorAll('*');
@@ -552,6 +572,17 @@ function handleBackgroundUpload(e) {
   reader.readAsDataURL(file);  
   e.target.value = '';
 }
+
+function setSoundType(type) {
+  if (['type-machine', 'pen'].includes(type)) {
+    soundType = type;
+    localStorage.setItem('odak_sound_type', soundType);
+    updateSoundPaths();
+    updateSoundTypeButtons();
+  }
+}
+
+
 
 function toggleSound() {
   const soundBtn = document.getElementById('sound-btn');
@@ -1224,13 +1255,13 @@ function initBootstrapTooltips() {
   }
 }
 
-function updateFontSizeLabel() {
+function updateSettingsLabels() {
+  // Update font size label
   const fontSizeLabel = document.getElementById('font-size-value');
-  if (fontSize === 120) {
-    fontSizeLabel.textContent = '120%';
-  } else {
-    fontSizeLabel.textContent = fontSize + '%';
-  }
+  fontSizeLabel.textContent = fontSize + '%';
+
+  const fontWidthLabel = document.getElementById('editor-width-value');
+  fontWidthLabel.textContent = editorWidth + '%';
 }
 
 // Make popup draggable by header
@@ -1376,13 +1407,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('font-size-slider').addEventListener('input', (e) => {
     fontSize = parseInt(e.target.value);
     localStorage.setItem('odak_font_size', fontSize);
-    updateFontSizeLabel();
+    updateSettingsLabels();
     applySettings();
   });
   
-  document.getElementById('editor-width-input').addEventListener('change', (e) => {
+  document.getElementById('editor-width-slider').addEventListener('input', (e) => {
     editorWidth = parseInt(e.target.value);
     localStorage.setItem('odak_editor_width', editorWidth);
+    updateSettingsLabels();
     applySettings();
   });
   
@@ -1420,6 +1452,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('download-all-btn').addEventListener('click', downloadAllDocuments);
+
+  document.getElementById('sound-type-select').addEventListener('change', (e) => setSoundType(e.target.value));
 
   document.addEventListener('click', (e) => {
     const volumePopup = document.getElementById('volume-popup');
