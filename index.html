@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- 
   Odak.app is a clean, minimalist, and privacy-respecting writing app with live Markdown rendering—built to keep you in the flow. No accounts, no ads, no cloud, and no distractions. Everything is stored locally on your device.
-  v=2.5
+  v=2.4
   Author: Araz Gholami @arazgholami
   Email: contact@odak.app
 -->
@@ -20,9 +20,9 @@
   <meta name="theme-color" content="#000000">
   <link rel="stylesheet" href="./assets/vendor/bootstrap.min.css">
   <link rel="stylesheet" href="./assets/vendor/font-awesome.min.css">
-  <link rel="stylesheet" href="./assets/styles/theme-light.css?v=2.5">
-  <link rel="stylesheet" href="./assets/styles/style.css?v=2.5">
-  <link rel="stylesheet" href="./assets/styles/responsive.css?v=2.5">
+  <link rel="stylesheet" href="./assets/styles/theme-light.css?v=2.4">
+  <link rel="stylesheet" href="./assets/styles/style.css?v=2.4">
+  <link rel="stylesheet" href="./assets/styles/responsive.css?v=2.4">
 </head>
 <body>
   <div id="app">
@@ -38,12 +38,6 @@
     </div>
     
     <div id="volume-popup" class="popup hidden">
-      <div class="sound-type-control">
-        <select id="sound-type-select" class="settings-control">
-          <option value="type-machine">Type Machine (Default)</option>
-          <option value="pen">Pen</option>
-        </select>
-      </div>
       <div class="volume-control">
         <input type="range" id="volume-slider" min="0" max="100" value="50" class="volume-slider">
         <div class="volume-label">Volume: <span id="volume-value">50%</span></div>
@@ -76,21 +70,23 @@
         </div>
         
         <div class="settings-section">
-          <div class="settings-row">
-            <label for="font-size-slider">Font Size: <span id="font-size-value">120%</span></label>
-            <div class="slider-container">
-              <input type="range" id="font-size-slider" min="50" max="200" value="120" class="settings-slider">
-            </div>
-          </div>
-          
-          <div class="settings-row">
-            <label for="editor-width-slider">Editor Width: <span id="editor-width-value">80%</span></label>
-            <div class="slider-container">
-              <input type="range" id="editor-width-slider" min="40" max="100" value="80" class="settings-slider">
-            </div>
+          <label for="font-size-slider">Font Size: <span id="font-size-value">Default</span></label>
+          <div class="font-size-slider-container">
+            <input type="range" id="font-size-slider" min="50" max="200" value="120" class="settings-slider">
+            <div class="font-size-marker"></div>
           </div>
         </div>
         
+        <div class="settings-section">
+          <div class="settings-row">
+            <label for="editor-width-input">Editor Width</label>
+            <div class="width-input-container">
+              <input type="number" id="editor-width-input" class="settings-control" value="830" min="400" max="1600">
+              <span class="unit-label">px</span>
+            </div>
+          </div>
+        </div>
+
         <div class="settings-section">
           <div class="settings-row">
             <label>Themes</label>
@@ -187,7 +183,7 @@
           <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"> <title>odak-icon-512</title> <path id="Path 0" fill-rule="evenodd" class="s0" fill="currentColor" d="m261 30.6q18.5 0.3 30.5 2.3c6.6 1.1 16.3 3.1 21.5 4.5 5.2 1.4 13.6 3.9 18.5 5.6 4.9 1.7 15.3 6.2 23 9.9 7.7 3.8 19.4 10.5 26 14.9 6.6 4.4 16.3 11.6 21.5 16 5.2 4.3 12.8 11.5 16.9 15.8 4.1 4.3 10.1 11.3 13.4 15.4 3.3 4.1 9.2 12.2 13 18 3.8 5.8 10 16.8 13.7 24.5 3.8 7.7 8.3 18.1 10 23 1.7 4.9 4.4 14.2 6 20.5 1.6 6.3 3.7 16.7 4.7 23 1.2 8.2 1.7 17.3 1.7 32 0 14.7-0.5 23.8-1.7 32-1 6.3-3.1 16.7-4.7 23-1.6 6.3-4.3 15.6-6 20.5-1.8 4.9-5.8 14.4-8.9 21-3.2 6.6-8.4 16.3-11.6 21.5-3.3 5.2-9.3 14-13.5 19.5-4.1 5.5-12.4 15-18.5 21.1-6.1 6.1-14.6 13.9-19 17.4-4.4 3.5-12.7 9.5-18.5 13.3-5.8 3.8-16.8 10-24.5 13.8-7.7 3.7-18.5 8.3-24 10.2-5.5 1.9-14.7 4.6-20.5 6-5.8 1.4-15.7 3.4-22 4.4-8.2 1.2-17.4 1.7-32 1.7-14.7 0-23.8-0.5-32-1.7-6.3-1-16.7-3.1-23-4.7-6.3-1.6-16.2-4.5-22-6.6-5.8-2.1-16.8-7-24.5-10.9-7.7-3.9-17.6-9.5-22-12.5-4.4-2.9-11.8-8.3-16.5-11.9-4.7-3.6-13.3-11.3-19.1-17.1-5.8-5.8-13.4-14.1-16.9-18.5-3.5-4.4-9.5-12.7-13.3-18.5-3.8-5.8-10-16.8-13.8-24.5-3.7-7.7-8.3-18.5-10.2-24-1.9-5.5-4.6-14.7-6-20.5-1.4-5.8-3.4-15.4-4.3-21.5-1.4-8.1-1.8-16.6-1.8-32.5 0-15.9 0.4-24.4 1.8-32.5 0.9-6.1 2.9-15.7 4.3-21.5 1.4-5.8 4.1-15 6-20.5 1.9-5.5 6.5-16.3 10.2-24 3.8-7.7 10.5-19.4 14.9-26 4.4-6.6 11.6-16.3 16-21.5 4.3-5.2 11.4-12.8 15.6-16.8 4.2-3.9 11.1-10 15.4-13.4 4.2-3.4 12.4-9.3 18.2-13.1 5.8-3.8 16.8-10 24.5-13.7 7.7-3.8 18.1-8.3 23-10 4.9-1.7 14.2-4.4 20.5-6 6.3-1.6 16.2-3.6 22-4.4 5.8-0.9 12.5-1.8 15-2 2.5-0.2 12.8-0.2 23 0zm-42.5 33.5c-6.1 1.2-16.4 3.9-23 6-6.6 2.2-17.6 6.7-24.5 10-6.9 3.3-16.8 8.9-22 12.3-5.2 3.4-14.2 10.3-20 15.2-5.8 5-13.7 12.6-17.5 16.9-3.9 4.4-9.1 10.7-11.6 14-2.5 3.3-7 9.8-9.9 14.5-3 4.7-7.8 13.7-10.8 20-3 6.3-7 16.2-8.9 22-1.9 5.8-4.6 16.1-6.1 23-2.5 11.7-2.7 14.1-2.7 38 0 24 0.2 26.3 2.8 38.3 1.5 7 4.3 17.5 6.3 23.5 2 5.9 5.8 15.4 8.5 21.2 2.8 5.8 7.1 13.9 9.6 18 2.6 4.1 7.8 11.8 11.7 17 3.9 5.2 11.8 14.2 17.6 20 5.8 5.8 14.8 13.7 20 17.6 5.2 3.9 12.4 8.8 16 11.1 3.6 2.2 10.1 5.8 14.5 8 4.4 2.2 12.9 5.9 19 8.2 6.1 2.2 15.3 5.2 20.5 6.5 5.2 1.3 14.7 3.2 21 4.1 9.1 1.4 15.8 1.6 32.5 1.2 17.4-0.4 23.1-0.9 33.3-3.1 6.7-1.4 17-4.2 23-6.2 5.9-2 15.6-5.9 21.7-8.8 6.1-2.9 14.8-7.6 19.5-10.6 4.7-2.9 11.9-7.8 16-10.9 4.1-3.1 11.4-9.4 16.3-14.1 4.9-4.7 12.2-12.6 16.2-17.5 4-4.9 9.8-12.8 12.8-17.5 3-4.7 8.3-14.1 11.6-21 3.3-6.9 7.7-17.4 9.7-23.5 2-6.1 4.7-16.2 6-22.5 1.3-6.3 2.8-17.8 3.4-25.5 0.8-10.1 0.8-17.7 0-27.5-0.6-7.4-2-18.2-3.1-24-1.2-5.8-3.8-15.9-6-22.5-2.2-6.6-6.7-17.6-10-24.5-3.3-6.9-8.6-16.3-11.6-21-3-4.7-8.8-12.6-12.8-17.5-4-4.9-11.3-12.8-16.1-17.5-4.9-4.7-11.6-10.6-14.9-13.1-3.3-2.5-9.8-7.1-14.5-10.2-4.7-3-14.1-8.3-21-11.6-6.9-3.3-17.9-7.8-24.5-10-6.6-2.2-16.7-4.8-22.5-6-5.8-1.1-16.4-2.5-23.5-3.1-7.1-0.5-14.8-0.9-17-0.9-2.2 0.1-8.5 0.5-14 1-5.5 0.4-14.9 1.8-21 3zm-14.6 98.1c2 0.4 4.7 1.6 6.1 2.8 1.4 1.1 4.8 3.3 7.5 5 2.8 1.6 6.8 3.2 9 3.6 2.2 0.4 6.5 0.2 9.5-0.5 3-0.6 7.5-2.4 10-4.1 2.5-1.6 5.6-3.9 7-5 1.9-1.6 3.9-2.1 8-2.1 3.9 0 6.2 0.5 8 1.9 1.4 1 3.5 3.4 4.8 5.3 1.4 2.1 2.2 4.9 2.2 7.2 0 2-0.6 4.9-1.4 6.5-0.8 1.5-3.2 4.3-5.3 6.4-2.1 2-6 5-8.8 6.7-2.7 1.7-7.9 4.1-11.5 5.4-5.2 1.7-8.8 2.2-18 2.2-9.6 0-12.6-0.4-18.5-2.4-3.8-1.4-10.3-4.8-14.4-7.5-4.1-2.8-8.5-6.7-9.9-8.6-1.9-2.9-2.3-4.5-2-9 0.2-3.1 1.2-6.7 2.2-8.2 1-1.5 2.8-3.2 3.9-3.9 1.2-0.7 3.5-1.5 5.1-1.9 1.6-0.3 4.5-0.3 6.5 0.2zm121 0c2 0.4 5.2 2.1 7.1 3.8 1.9 1.7 5.5 4 8 5.2 2.5 1.1 6.5 2.3 9 2.5 2.7 0.3 6.8-0.1 10-1 3-0.9 7.3-3.1 9.5-5 2.2-1.9 5.1-4 6.5-4.7 1.4-0.7 4.3-1.2 6.5-1.2 2.2 0 5.5 0.7 7.3 1.6 1.7 0.9 3.9 2.6 4.7 3.9 0.8 1.2 1.9 3.8 2.5 5.7 0.7 2.4 0.6 4.8-0.1 7.5-0.7 2.6-2.7 5.5-5.8 8.5-2.6 2.5-7.9 6.2-11.7 8.2-3.8 2-9.8 4.4-13.4 5.2-3.6 0.9-9.6 1.6-13.5 1.6-3.9 0-9.8-0.7-13.2-1.5-3.5-0.8-9.3-3-12.9-4.7-3.6-1.8-9-5.4-12-8-3.6-3.2-5.8-6.1-6.5-8.5-0.6-2.1-0.9-5.4-0.6-7.3 0.4-1.9 1.7-4.8 2.9-6.4 1.3-1.6 3.2-3.3 4.3-3.9 1.1-0.6 3.3-1.3 4.9-1.7 1.6-0.3 4.5-0.3 6.5 0.2zm23.6 79.5c1.6 0.3 4.2 1.2 5.8 1.9 1.5 0.8 3.6 2.9 4.7 4.7 1.2 2 1.9 5 2 8.2 0 3.3-0.7 6.1-2 8.3-1.1 1.7-4.1 4.9-6.7 7-2.7 2.1-7.5 5-10.8 6.6-3.3 1.6-9.4 3.7-13.5 4.8-5.4 1.5-10.8 2.1-19.5 2.1-8.3 0-14.2-0.5-19-1.7-3.9-1-10.3-3.3-14.2-5.2-4.2-2-9.7-5.6-12.9-8.6-4.4-4.1-5.8-6.2-6.3-9.3-0.4-2.2-0.3-5.6 0.2-7.5 0.5-1.9 1.9-4.6 3-5.8 1.2-1.3 3.4-3 5-3.8 1.5-0.8 4.4-1.4 6.5-1.4 2.7-0.1 5.1 0.9 8.7 3.4 2.8 2 6.4 4.3 8 5.2 1.6 1 5.3 2.3 8 3 2.8 0.8 8.6 1.4 13 1.4 5.2 0 10.3-0.7 14.5-1.9 4-1.3 8.2-3.4 11-5.8 2.5-2.1 6.1-4.3 8-5 1.9-0.7 4.9-1 6.5-0.6z"/> </svg>
           <span><section class="title">Odak.app</section><small class="author">Reimagined by Araz Gholami</small></span>
         </a>
-        <span class="status-link">v2.5</span>
+        <span class="status-link">v2.4</span>
         <a href="https://github.com/arazgholami/odak.app" target="_blank" class="status-link">Github</a>
         <a href="mailto:contact@odak.app" target="_blank" class="status-link">Contact</a>
         <a href="https://buymeacoffee.com/arazgholami" target="_blank" class="status-link">Donate</a>
@@ -205,9 +201,9 @@
   <input type="file" id="file-input" accept=".md,.txt" style="display: none;">
   <input type="file" id="bg-file-input" accept="image/*" style="display: none;">
   <script src="./assets/vendor/bootstrap.bundle.min.js"></script>
-  <script src="./assets/scripts/draggable-image.js?v=2.5"></script>
-  <script src="./assets/scripts/wysiwyg-markdown-editor.js?v=2.5.1"></script>
-  <script src="./assets/scripts/script.js?v=2.5"></script>
+  <script src="./assets/scripts/draggable-image.js?v=2.4"></script>
+  <script src="./assets/scripts/wysiwyg-markdown-editor.js?v=2.4"></script>
+  <script src="./assets/scripts/script.js?v=2.4"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XHKKG30QPD"></script>
   <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XHKKG30QPD'); </script>
 </body>
