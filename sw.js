@@ -1,6 +1,6 @@
 // Service Worker for Odak App
 
-const CACHE_NAME = 'odak-app-cache-v=2.4';
+const CACHE_NAME = 'odak-app-cache-v=2.6';
 const urlsToCache = [
   '/',
   '/index.html',
