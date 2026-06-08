@@ -11,10 +11,17 @@ class MarkdownEditor {
     constructor(element) {
         this.editor = element;
         this.isProcessing = false;
+        this.checkboxSelectionBeforeToggle = null;
         this.setupEventListeners();
     }
 
     setupEventListeners() {
+        this.editor.addEventListener('mousedown', (e) => {
+            this.handleCheckboxMouseDown(e);
+        });
+        this.editor.addEventListener('click', (e) => {
+            this.handleCheckboxClick(e);
+        });
         this.editor.addEventListener('input', (e) => {
             this.handleInput(e);
         });
@@ -22,6 +29,34 @@ class MarkdownEditor {
             this.handleKeyDown(e);
         });
         this.editor.addEventListener('keyup', (e) => this.handleKeyUp(e));
+    }
+
+    handleCheckboxMouseDown(e) {
+        if (!e.target.matches('input[type="checkbox"]')) return;
+
+        const selection = window.getSelection();
+        this.checkboxSelectionBeforeToggle = selection.rangeCount > 0
+            ? selection.getRangeAt(0).cloneRange()
+            : null;
+
+        e.preventDefault();
+    }
+
+    handleCheckboxClick(e) {
+        if (!e.target.matches('input[type="checkbox"]')) return;
+
+        if (this.checkboxSelectionBeforeToggle) {
+            const selection = window.getSelection();
+            try {
+                this.editor.focus({ preventScroll: true });
+            } catch (error) {
+                this.editor.focus();
+            }
+            selection.removeAllRanges();
+            selection.addRange(this.checkboxSelectionBeforeToggle);
+        }
+
+        this.checkboxSelectionBeforeToggle = null;
     }
 
     handleInput(e) {
