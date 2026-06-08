@@ -1,6 +1,7 @@
 (function () {
     const CLASS_WRAPPER = 'imglib-wrapper';
     const CLASS_HANDLE = 'imglib-handle';
+    const boundWrappers = new WeakSet();
 
     function injectStyles() {
       const style = document.createElement('style');
@@ -74,11 +75,14 @@
     }
 
     function bindDragResize(wrapper) {
+        if (boundWrappers.has(wrapper)) return;
+        boundWrappers.add(wrapper);
+
         const handle = wrapper.querySelector(`.${CLASS_HANDLE}`);
         if (!handle) return;
       
         const img = wrapper.querySelector('img');
-        const aspectRatio = img.naturalWidth / img.naturalHeight;
+        const aspectRatio = (img.naturalWidth && img.naturalHeight) ? img.naturalWidth / img.naturalHeight : 1;
       
         let isDragging = false, isResizing = false;
         let offsetX, offsetY, startX, startY, startWidth, startHeight;
@@ -125,6 +129,8 @@
       
   
     function initDraggableImages(editor) {
+      if (!editor) return;
+
       const images = editor.querySelectorAll('img[data-draggable]');
       images.forEach((img) => {
         if (img.closest(`.${CLASS_WRAPPER}`)) {
@@ -139,7 +145,7 @@
         // Calculate dimensions with aspect ratio
         const naturalWidth = img.naturalWidth || img.width;
         const naturalHeight = img.naturalHeight || img.height;
-        const aspectRatio = naturalWidth / naturalHeight;
+        const aspectRatio = naturalWidth && naturalHeight ? naturalWidth / naturalHeight : 1;
         const targetWidth = img.width || 200;
         const targetHeight = targetWidth / aspectRatio;
   
@@ -171,53 +177,13 @@
         wrapper.appendChild(deleteBtn);
         img.replaceWith(wrapper);
   
-        let isDragging = false, isResizing = false;
-        let offsetX, offsetY, startX, startY, startWidth, startHeight;
-  
-        wrapper.addEventListener('mousedown', (e) => {
-          if (e.target === handle) {
-            isResizing = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            startWidth = wrapper.offsetWidth;
-            startHeight = wrapper.offsetHeight;
-          } else {
-            isDragging = true;
-            offsetX = e.clientX - wrapper.offsetLeft;
-            offsetY = e.clientY - wrapper.offsetTop;
-          }
-          document.body.classList.add('imglib-dragging');
-          e.preventDefault();
-        });
-  
-        document.addEventListener('mousemove', (e) => {
-          if (!document.body.classList.contains('imglib-dragging')) return;
-  
-          if (isResizing) {
-            const dx = e.clientX - startX;
-            const newWidth = Math.max(50, startWidth + dx);
-            const newHeight = newWidth / aspectRatio;
-            wrapper.style.width = newWidth + 'px';
-            wrapper.style.height = newHeight + 'px';
-          }
-  
-          if (isDragging) {
-            wrapper.style.left = (e.clientX - offsetX) + 'px';
-            wrapper.style.top = (e.clientY - offsetY) + 'px';
-          }
-        });
-  
-        document.addEventListener('mouseup', () => {
-          isDragging = false;
-          isResizing = false;
-          document.body.classList.remove('imglib-dragging');
-        });
+        bindDragResize(wrapper);
       });
     }
   
     document.addEventListener('DOMContentLoaded', () => {
       injectStyles();
-      initDraggableImages(editor);
+      initDraggableImages(document.getElementById('editor'));
     });
   
     window.initDraggableImages = initDraggableImages;

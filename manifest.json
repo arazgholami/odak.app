@@ -1,12 +1,12 @@
 {
   "name": "Odak",
   "short_name": "Odak",
-  "description": "A clean and simple writing tool",
+  "description": "A clean, offline, local-first Markdown writing app",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#f8f5f0",
   "theme_color": "#f8f5f0",
-  "version": "2.2",
+  "version": "3.0",
   "icons": [
     {
       "src": "./assets/images/odak-icon-192.png",

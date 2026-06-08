@@ -1,6 +1,6 @@
 /*
  * Odak.app is a clean, minimalist, and privacy-respecting writing app with live Markdown rendering—built to keep you in the flow. No accounts, no ads, no cloud, and no distractions. Everything is stored locally on your device.
- * v=2.6
+ * v=3.0
  * Author: Araz Gholami @arazgholami
  * Email: contact@arazgholami.com
  */
@@ -8,6 +8,7 @@
 let currentDocumentId = null;
 let isTyping = false;
 let typingTimer = null;
+let autosaveTimer = null;
 let soundEnabled = true;
 let soundVolume = 0.5; 
 let currentTheme = 'light'; // Default theme
@@ -21,6 +22,64 @@ let editorWidth = 830;
 let systemFonts = []; 
 let useCustomBg = false; 
 
+const EXAMPLE_DOCUMENT_ID = 'odak_example_markdown_v3';
+const EXAMPLE_MARKDOWN = `# Odak Markdown Example
+
+This document shows the Markdown syntax currently supported by Odak 3.0.
+
+## Text Formatting
+
+Write **bold text**, *italic text*, __underlined text__, and \`inline code\`.
+
+### Links
+
+Visit [Odak.app](https://odak.app) or [email the author](mailto:contact@odak.app).
+
+### Image
+
+![Odak logo](https://odak.app/assets/images/odak.svg)
+
+## Lists
+
+- Focused writing
+- Local-first storage
+- Offline support
+- RTL and LTR text
+
+1. Open Odak
+2. Start writing
+3. Save locally
+4. Export as Markdown
+
+## Checkboxes
+
+- [x] Try the editor
+- [x] Import a Markdown file
+- [ ] Write something worth keeping
+
+## Quote
+
+> Your thoughts deserve a focused space. Odak is it.
+
+## Horizontal Rule
+
+---
+
+## Headings
+
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+
+## Multilingual
+
+English text works naturally.
+
+متن فارسی هم با جهت راست به چپ پشتیبانی می‌شود.`;
+
 // Add function to handle typing state
 function handleTypingState() {
   isTyping = true;
@@ -31,6 +90,13 @@ function handleTypingState() {
     isTyping = false;
     toggleToolbarAndStatusbar('show');
   }, 2000); // Show UI elements after 2 seconds of no typing
+}
+
+function scheduleAutosave() {
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(() => {
+    saveCurrentDocumentContent();
+  }, 700);
 }
 
 MarkdownEditor.init('editor', {
@@ -52,11 +118,7 @@ const fileInput = document.getElementById('file-input');
 editor.addEventListener('input', () => {
   handleTypingState();
   updateCounter();
-  
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(() => {
-    saveCurrentDocumentContent();
-  }, 1000);
+  scheduleAutosave();
 });
 
 // Add mouse movement event listener to show UI elements
@@ -102,6 +164,7 @@ function init() {
   }
   
   loadDocumentsFromStorage();  
+  ensureExampleDocument();
   loadPreferences();  
   if (currentDocumentId && documents[currentDocumentId]) {
     loadDocument(currentDocumentId);
@@ -124,13 +187,46 @@ function init() {
 function loadDocumentsFromStorage() {
   const savedDocuments = localStorage.getItem('odak_documents');
   if (savedDocuments) {
-    documents = JSON.parse(savedDocuments);
+    try {
+      const parsed = JSON.parse(savedDocuments);
+      documents = parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (error) {
+      console.error('Could not parse saved documents. Starting with an empty library.', error);
+      documents = {};
+      localStorage.removeItem('odak_documents');
+      localStorage.removeItem('odak_current_document');
+    }
   }
   
   const lastDocumentId = localStorage.getItem('odak_current_document');
   if (lastDocumentId) {
     currentDocumentId = lastDocumentId;
   }
+
+  if (currentDocumentId && !documents[currentDocumentId]) {
+    currentDocumentId = null;
+    localStorage.removeItem('odak_current_document');
+  }
+}
+
+function ensureExampleDocument() {
+  if (documents[EXAMPLE_DOCUMENT_ID]) return;
+
+  const hadDocuments = Object.keys(documents).length > 0;
+  const now = new Date().toISOString();
+  documents[EXAMPLE_DOCUMENT_ID] = {
+    id: EXAMPLE_DOCUMENT_ID,
+    title: 'Odak Markdown Example',
+    content: convertMarkdownToHtml(EXAMPLE_MARKDOWN),
+    created: now,
+    updated: now
+  };
+
+  if (!hadDocuments || !currentDocumentId) {
+    currentDocumentId = EXAMPLE_DOCUMENT_ID;
+  }
+
+  saveDocumentsToStorage();
 }
 
 function loadPreferences() {
@@ -144,9 +240,9 @@ function loadPreferences() {
     updateSoundButton();
   } else {
     
-    soundVolume = 0.2;
-    document.getElementById('volume-slider').value = 70;
-    document.getElementById('volume-value').textContent = '70%';
+    soundVolume = 0.5;
+    document.getElementById('volume-slider').value = 50;
+    document.getElementById('volume-value').textContent = '50%';
     updateSoundButton();
   }  
   const savedTheme = localStorage.getItem('odak_theme');
@@ -214,8 +310,6 @@ function handleKeyDown(e) {
   } else if (e.key.length === 1) {
     playSound('key');
   }
-  
-  lastKeyPressed = e.key;
 }
 
 function playSound(type) {
@@ -289,7 +383,7 @@ function applyTheme() {
   // Update theme stylesheet
   const themeLink = document.querySelector('link[href^="./assets/styles/theme-"]');
   if (themeLink) {
-    themeLink.href = `./assets/styles/theme-${currentTheme}.css?v=2.6`;
+    themeLink.href = `./assets/styles/theme-${currentTheme}.css?v=3.0`;
   }
   
   // Update UI elements
@@ -613,6 +707,15 @@ function generateNewDocument() {
 
 function saveCurrentDocumentContent() {
   if (!currentDocumentId) return;
+  if (!documents[currentDocumentId]) {
+    documents[currentDocumentId] = {
+      id: currentDocumentId,
+      title: 'Untitled Document',
+      content: '',
+      created: new Date().toISOString(),
+      updated: new Date().toISOString()
+    };
+  }
   const content = editor.innerHTML;
   let title = 'Untitled Document';
   const firstLine = editor.textContent.trim().split('\n')[0];
@@ -627,6 +730,7 @@ function saveCurrentDocumentContent() {
 
 function saveCurrentDocument() {
   if (!currentDocumentId) return;  
+  saveCurrentDocumentContent();
   const saveBtn = document.getElementById('save-btn');
   const originalText = saveBtn.textContent;
   saveBtn.textContent = 'Saved';
@@ -647,8 +751,15 @@ function saveDocumentTitle(id, newTitle) {
 }
 
 function saveDocumentsToStorage() {
-  localStorage.setItem('odak_documents', JSON.stringify(documents));
-  localStorage.setItem('odak_current_document', currentDocumentId);
+  try {
+    localStorage.setItem('odak_documents', JSON.stringify(documents));
+    if (currentDocumentId) {
+      localStorage.setItem('odak_current_document', currentDocumentId);
+    }
+  } catch (error) {
+    console.error('Unable to save documents:', error);
+    alert('Odak could not save your latest change. Browser storage may be full.');
+  }
 }
 
 function loadDocument(id) {
@@ -833,15 +944,25 @@ function downloadCurrentDocument() {
   downloadDocument(currentDocumentId);
 }
 
+function sanitizeFileName(name, fallback = 'untitled_document') {
+  const cleanName = String(name || '')
+    .trim()
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g, '_')
+    .replace(/\s+/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 80);
+
+  return cleanName || fallback;
+}
+
 function downloadDocument(id) {
   if (!documents[id]) return;
   
   const doc = documents[id];
   const markdownContent = convertToMarkdown(doc.content);  
   const firstLine = markdownContent.split('\n')[0].replace(/^#\s+/, '').trim();
-  const fileName = firstLine && firstLine.length > 0 ? 
-    `${firstLine.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md` : 
-    `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;  
+  const fileName = `${sanitizeFileName(firstLine || doc.title).toLowerCase()}.md`;  
   const blob = new Blob([markdownContent], {type: 'text/markdown'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -854,19 +975,27 @@ function downloadDocument(id) {
 }
 
 function downloadAllDocuments() {
-  
-  if (typeof JSZip === 'undefined') {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-    script.onload = () => {
-      
-      createAndDownloadZip();
-    };
-    document.head.appendChild(script);
-  } else {
-    
+  if (typeof JSZip !== 'undefined') {
     createAndDownloadZip();
+    return;
   }
+
+  const bundle = Object.values(documents)
+    .map(doc => {
+      const title = doc.title || 'Untitled Document';
+      return `# ${title}\n\n${convertToMarkdown(doc.content)}`;
+    })
+    .join('\n\n---\n\n');
+
+  const blob = new Blob([bundle], {type: 'text/markdown'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'odak-writings.md';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function createAndDownloadZip() {
@@ -879,9 +1008,7 @@ function createAndDownloadZip() {
     const markdown = convertToMarkdown(content);
     
     const firstLine = markdown.split('\n')[0].replace(/^#\s+/, '').trim();
-    const fileName = firstLine && firstLine.length > 0 ? 
-      `${firstLine}.md` : 
-      `${doc.title}.md`;
+    const fileName = `${sanitizeFileName(firstLine || doc.title)}.md`;
     
     
     zip.file(fileName, markdown);
@@ -943,6 +1070,25 @@ function convertToMarkdown(html) {
           const alt = node.getAttribute('alt') || '';
           const src = node.getAttribute('src') || '';
           return `![${alt}](${src})`;
+        case 'div':
+          if (node.classList.contains('imglib-wrapper')) {
+            const wrappedImage = node.querySelector('img');
+            if (wrappedImage) {
+              const alt = wrappedImage.getAttribute('alt') || '';
+              const src = wrappedImage.getAttribute('src') || '';
+              return `![${alt}](${src})`;
+            }
+          }
+          const checkbox = node.querySelector(':scope > input[type="checkbox"]');
+          if (checkbox) {
+            const textContent = Array.from(node.childNodes)
+              .filter(child => child !== checkbox)
+              .map(child => child.nodeType === Node.TEXT_NODE ? child.textContent : processNode(child, context))
+              .join('')
+              .trim();
+            return `- [${checkbox.checked || checkbox.hasAttribute('checked') ? 'x' : ' '}] ${textContent}`;
+          }
+          return childContent;
         case 'hr': return `---` + "\n";
         case 'ul':
         case 'ol':
@@ -956,18 +1102,6 @@ function convertToMarkdown(html) {
           } else {
             return `- ${childContent}\n`;
           }
-        case 'div':
-          const checkbox = node.querySelector('input[type="checkbox"]');
-          if (checkbox) {
-            const textContent = Array.from(node.childNodes)
-              .filter(child => child.nodeType === Node.TEXT_NODE || 
-                               (child.nodeType === Node.ELEMENT_NODE && child.tagName.toLowerCase() !== 'input'))
-              .map(child => child.nodeType === Node.TEXT_NODE ? child.textContent : child.textContent)
-              .join('')
-              .trim();
-            return `- [${checkbox.checked || checkbox.parentElement.getAttribute('data-checked') === 'true' ? 'x' : ' '}] ${textContent}`;
-          }
-          return childContent;
         case 'input':
           return '';
         case 'br':
@@ -1050,6 +1184,62 @@ function handleFileUpload(e) {
   fileInput.value = '';
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function sanitizeUrl(url, allowDataImage = false) {
+  const value = String(url || '').trim();
+  if (!value) return '';
+
+  if (allowDataImage && /^data:image\/(?:png|gif|jpe?g|webp|svg\+xml);base64,/i.test(value)) {
+    return value;
+  }
+
+  try {
+    const parsed = new URL(value, window.location.href);
+    if (['http:', 'https:', 'mailto:', 'tel:'].includes(parsed.protocol)) {
+      return value;
+    }
+  } catch (error) {
+    if (/^(?:\.{0,2}\/|#)/.test(value)) {
+      return value;
+    }
+  }
+
+  return '#';
+}
+
+function renderInlineMarkdown(markdown) {
+  const tokens = [];
+  let escaped = escapeHtml(markdown)
+    .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (match, alt, src) => {
+      const token = `\u0000${tokens.length}\u0000`;
+      tokens.push(`<img src="${escapeHtml(sanitizeUrl(src, true))}" alt="${escapeHtml(alt)}" data-draggable>`);
+      return token;
+    })
+    .replace(/(?<!!)\[([^\]]+)\]\(([^)\s]+)\)/g, (match, text, href) => {
+      const token = `\u0000${tokens.length}\u0000`;
+      tokens.push(`<a href="${escapeHtml(sanitizeUrl(href))}" target="_blank" rel="noopener noreferrer">${text}</a>`);
+      return token;
+    })
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
+    .replace(/__(.+?)__/g, '<u>$1</u>');
+
+  tokens.forEach((html, index) => {
+    escaped = escaped.replace(`\u0000${index}\u0000`, html);
+  });
+
+  return escaped;
+}
+
 function convertMarkdownToHtml(markdown) {
   // Split the markdown into lines
   const lines = markdown.split('\n');
@@ -1073,17 +1263,17 @@ function convertMarkdownToHtml(markdown) {
     }
 
     // Headers
-    if (line.startsWith('#')) {
-      const level = line.match(/^#+/)[0].length;
+    if (/^#{1,6}\s/.test(line)) {
+      const level = line.match(/^#{1,6}/)[0].length;
       const content = line.replace(/^#+\s*/, '');
-      html += `<h${level} dir="auto">${content}</h${level}>`;
+      html += `<h${level} dir="auto">${renderInlineMarkdown(content)}</h${level}>`;
       continue;
     }
 
     // Blockquotes
     if (line.startsWith('>')) {
       const content = line.replace(/^>\s*/, '');
-      html += `<blockquote dir="auto">${content}</blockquote>`;
+      html += `<blockquote dir="auto">${renderInlineMarkdown(content)}</blockquote>`;
       continue;
     }
 
@@ -1098,7 +1288,7 @@ function convertMarkdownToHtml(markdown) {
       const match = line.match(/^-\s\[( |x)\]\s(.*)/);
       const checked = match[1] === 'x';
       const content = match[2];
-      html += `<div dir="auto"><input type="checkbox" ${checked ? 'checked' : ''} dir="auto"> ${content}</div>`;
+      html += `<div dir="auto"><input type="checkbox" ${checked ? 'checked' : ''} dir="auto"> ${renderInlineMarkdown(content)}</div>`;
       continue;
     }
     
@@ -1113,7 +1303,7 @@ function convertMarkdownToHtml(markdown) {
         listItems = [];
       }
       const content = line.replace(/^\d+\.\s*/, '');
-      listItems.push(`<li dir="auto">${content}</li>`);
+      listItems.push(`<li dir="auto">${renderInlineMarkdown(content)}</li>`);
       continue;
     }
 
@@ -1128,24 +1318,12 @@ function convertMarkdownToHtml(markdown) {
         listItems = [];
       }
       const content = line.replace(/^-\s*/, '');
-      listItems.push(`<li dir="auto">${content}</li>`);
+      listItems.push(`<li dir="auto">${renderInlineMarkdown(content)}</li>`);
       continue;
     }
 
     // Process inline markdown
-    let processedLine = line
-      // Bold
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Italic
-      .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
-      // Underline
-      .replace(/__(.+?)__/g, '<u>$1</u>')
-      // Inline Code
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      // Links
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-      // Images
-      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+    let processedLine = renderInlineMarkdown(line);
 
     html += `<div dir="auto">${processedLine}</div>`;
   }
@@ -1329,11 +1507,6 @@ document.addEventListener('click', syncCheckboxAttribute);
 
 document.addEventListener('DOMContentLoaded', () => {
   init();
-  
-  editor.addEventListener('input', () => {
-    updateCounter();
-    saveCurrentDocumentContent();
-  });
 
   editor.addEventListener('click', () => {
     saveCurrentDocumentContent();

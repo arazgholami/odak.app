@@ -1,6 +1,6 @@
 /**
  * WYSIWYG Markdown Editor
- * v=2.6
+ * v=3.0
  * A lightweight, real-time markdown editor with live rendering and LTR-RTL support
  * Usage: MarkdownEditor.init('your-div-id');
  * Author: Araz Gholami @arazgholami
@@ -325,8 +325,8 @@ class MarkdownEditor {
             { regex: /^(#{1,6})\s(.*)$/, handler: (match) => this.replaceWithElement(`h${match[1].length}`, match[2], range.startContainer), minPos: (match) => match[1].length + 1 },
             { regex: /^>\s(.+)$/, handler: (match) => this.createBlockquote(match[1], range.startContainer), minPos: 2 },
             { regex: /^---\s*$/, handler: (match) => this.createHorizontalRule(range.startContainer), minPos: 3 },
-            { regex: /!\[([^\]]*)\]\(([^)]+)\)/, handler: (match) => this.createImage(match[1], match[2], text, range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
-            { regex: /\[([^\]]+)\]\(([^)]+)\)/, handler: (match) => this.createLink(match[1], match[2], text, range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
+            { regex: /!\[([^\]]*)\]\(([^)\s]+)\)/, handler: (match) => this.createImage(match[1], match[2], text, range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
+            { regex: /(?<!!)\[([^\]]+)\]\(([^)\s]+)\)/, handler: (match) => this.createLink(match[1], match[2], text, range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
             { regex: /\*\*(.*?)\*\*/, handler: (match) => this.replaceInlineMarkdown(text, match, 'strong', range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
             { regex: /(?<!\*)\*([^*]+)\*(?!\*)/, handler: (match) => this.replaceInlineMarkdown(text, match, 'em', range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
             { regex: /__(.+?)__/, handler: (match) => this.replaceInlineMarkdown(text, match, 'u', range.startContainer), minPos: (match) => text.indexOf(match[0]) + match[0].length },
@@ -478,9 +478,10 @@ class MarkdownEditor {
 
     createLink(text, url, fullText, textNode) {
         const link = document.createElement('a');
-        link.href = url;
+        link.href = this.sanitizeUrl(url);
         link.textContent = text;
         link.target = '_blank';
+        link.rel = 'noopener noreferrer';
 
         const match = fullText.match(/\[([^\]]+)\]\(([^)]+)\)/);
         this.insertElementWithText(link, fullText, match[0], textNode);
@@ -488,13 +489,41 @@ class MarkdownEditor {
 
     createImage(alt, src, fullText, textNode) {
         const img = document.createElement('img');
-        img.src = src;
+        img.src = this.sanitizeUrl(src, true);
         img.alt = alt;
         img.setAttribute('data-draggable', '');
 
         const match = fullText.match(/!\[([^\]]*)\]\(([^)]+)\)/);
         this.insertElementWithText(img, fullText, match[0], textNode);
-        initDraggableImages(editor);
+        if (typeof initDraggableImages === 'function') {
+            if (img.complete) {
+                initDraggableImages(this.editor);
+            } else {
+                img.addEventListener('load', () => initDraggableImages(this.editor), { once: true });
+            }
+        }
+    }
+
+    sanitizeUrl(url, allowDataImage = false) {
+        const value = String(url || '').trim();
+        if (!value) return '';
+
+        if (allowDataImage && /^data:image\/(?:png|gif|jpe?g|webp|svg\+xml);base64,/i.test(value)) {
+            return value;
+        }
+
+        try {
+            const parsed = new URL(value, window.location.href);
+            if (['http:', 'https:', 'mailto:', 'tel:'].includes(parsed.protocol)) {
+                return value;
+            }
+        } catch (error) {
+            if (/^(?:\.{0,2}\/|#)/.test(value)) {
+                return value;
+            }
+        }
+
+        return '#';
     }
 
     createHorizontalRule(textNode) {
@@ -520,14 +549,14 @@ class MarkdownEditor {
         if (range.startContainer.nodeType === Node.TEXT_NODE) {
             const element = range.startContainer.parentElement;
             const textContent = range.startContainer.textContent;
-            if (range.startOffset === textContent.length && this.isStyledElement(element)) {
+            if (range.startOffset === textContent.length && this.isBackspaceRevertibleElement(element)) {
                 e.preventDefault();
                 this.convertToPlain(element);
                 return;
             }
         } else if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
             const element = range.startContainer;
-            if (this.isStyledElement(element)) {
+            if (this.isBackspaceRevertibleElement(element)) {
                 const textNode = element.firstChild;
                 if (textNode && textNode.nodeType === Node.TEXT_NODE && range.startOffset === textNode.textContent.length) {
                     e.preventDefault();
@@ -537,9 +566,9 @@ class MarkdownEditor {
             }
 
             const prevElement = range.startContainer.childNodes[range.startOffset - 1];
-            if (prevElement && this.isStyledElement(prevElement)) {
+            if (prevElement && this.isBackspaceRevertibleElement(prevElement)) {
                 e.preventDefault();
-                this.convertToMarkdown(prevElement);
+                this.convertToPlain(prevElement);
                 return;
             }
         }
@@ -559,6 +588,10 @@ class MarkdownEditor {
 
     isStyledElement(element) {
         return ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'STRONG', 'EM', 'U', 'CODE', 'LI', 'BLOCKQUOTE', 'A', 'IMG', 'HR'].includes(element.tagName);
+    }
+
+    isBackspaceRevertibleElement(element) {
+        return ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'STRONG', 'EM', 'U', 'CODE', 'BLOCKQUOTE', 'A', 'IMG', 'HR'].includes(element.tagName);
     }
 
     convertToPlain(element) {

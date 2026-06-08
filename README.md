@@ -5,6 +5,7 @@
 
 <p align="center">
   <strong>Distraction-free Markdown writing app, fully offline and local-first.</strong><br>
+  <strong>Version 3.0</strong><br>
   <a href="https://odak.app">Try it now!</a> | <a href="https://github.com/arazgholami/markdown-editor">Powered by WYSIWYG Markdown Editor</a>
 </p>
 
@@ -31,13 +32,19 @@ No accounts, no ads, no cloud, and no distractions. Everything is stored locally
 ## Features
 
 - **Distraction-Free UI** – Auto-hides toolbars as you type, with optional nostalgic typewriter sounds  
-- **Live Markdown Support** – Create, edit, import, and export `.md` documents with real-time rendering  
+- **Live Markdown Support** – Create, edit, import, and export `.md` documents with safer v3.0 rendering  
 - **Local-First Storage** – All content is saved on your device; no internet or servers required  
 - **Themes** – Switch between light, dark, and custom "Odak" theme for optimal writing comfort  
 - **Custom UI** – Adjust font family, size, and editor width to your taste  
 - **Multilingual** – Auto-detects RTL and LTR text for seamless international writing  
 - **Backgrounds** – Add custom background images for personalized inspiration  
 - **Offline-Ready** – Works offline, with PWA support for installation on desktop or mobile  
+
+---
+
+## Version 3.0
+
+Odak 3.0 tightens the writing core: safer Markdown import/export, more reliable autosave, sturdier local storage recovery, offline-friendly bulk export, refreshed PWA cache metadata, and a cleaner local-first footprint.
 
 ---
 

@@ -1,12 +1,16 @@
 // Service Worker for Odak App
 
-const CACHE_NAME = 'odak-app-cache-v=2.6';
+const CACHE_NAME = 'odak-app-cache-v3.0';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/example.md',
   '/assets/styles/style.css',
+  '/assets/styles/responsive.css',
+  '/assets/styles/theme-light.css',
+  '/assets/styles/theme-dark.css',
+  '/assets/styles/theme-odak.css',
   '/assets/scripts/script.js',
-  '/assets/images/odak.svg',
   '/assets/images/odak.svg',
   '/assets/images/odak-paper.png',
   '/assets/images/dark-paper.png',
@@ -39,8 +43,9 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        return Promise.allSettled(urlsToCache.map(url => cache.add(url)));
       })
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -57,12 +62,16 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
 // Fetch event - serve cached content when offline
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -105,7 +114,8 @@ self.addEventListener('fetch', event => {
                 }
                 
                 // If no cached version exists, return a basic offline page
-                if (event.request.headers.get('accept').includes('text/html')) {
+                const acceptHeader = event.request.headers.get('accept') || '';
+                if (acceptHeader.includes('text/html')) {
                   return caches.match('/index.html');
                 }
                 
