@@ -15,6 +15,8 @@ let currentTheme = 'light'; // Default theme
 let isFullscreen = false;
 let documents = {};
 let customBackground = null; 
+let documentSearchQuery = '';
+let documentSortMode = 'updated-desc';
 
 let fontFamily = 'Vazir'; 
 let fontSize = 120; 
@@ -728,6 +730,8 @@ function saveCurrentDocumentContent() {
   saveDocumentsToStorage();
 }
 
+window.saveCurrentDocumentContent = saveCurrentDocumentContent;
+
 function saveCurrentDocument() {
   if (!currentDocumentId) return;  
   saveCurrentDocumentContent();
@@ -783,9 +787,32 @@ function toggleDocumentsList() {
 function updateDocumentsList() {
   
   documentsListElement.innerHTML = '';  
-  const sortedDocs = Object.values(documents).sort((a, b) => {
-    return new Date(b.updated) - new Date(a.updated);
-  });  
+  const query = documentSearchQuery.trim().toLowerCase();
+  const sortedDocs = Object.values(documents)
+    .filter(doc => {
+      if (!query) return true;
+      const markdown = convertToMarkdown(doc.content).toLowerCase();
+      return (doc.title || '').toLowerCase().includes(query) || markdown.includes(query);
+    })
+    .sort((a, b) => {
+      switch (documentSortMode) {
+        case 'updated-asc':
+          return new Date(a.updated) - new Date(b.updated);
+        case 'created-desc':
+          return new Date(b.created) - new Date(a.created);
+        case 'title-asc':
+          return (a.title || '').localeCompare(b.title || '');
+        default:
+          return new Date(b.updated) - new Date(a.updated);
+      }
+    });
+
+  const listSummary = document.getElementById('documents-summary');
+  if (listSummary) {
+    const total = Object.keys(documents).length;
+    listSummary.textContent = `${sortedDocs.length} of ${total} writing${total === 1 ? '' : 's'}`;
+  }
+
   sortedDocs.forEach(doc => {
     const docItem = document.createElement('div');
     docItem.className = 'document-item';
@@ -889,6 +916,7 @@ function updateDocumentsList() {
     const deleteBtn = document.createElement('button');
     deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
     deleteBtn.title = 'Delete';
+    deleteBtn.setAttribute('aria-label', `Delete ${doc.title}`);
     deleteBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (confirm('Are you sure you want to delete this document?')) {
@@ -899,12 +927,23 @@ function updateDocumentsList() {
     const downloadBtn = document.createElement('button');
     downloadBtn.innerHTML = '<i class="fas fa-download"></i>';
     downloadBtn.title = 'Download';
+    downloadBtn.setAttribute('aria-label', `Download ${doc.title}`);
     downloadBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       downloadDocument(doc.id);
     });
+
+    const duplicateBtn = document.createElement('button');
+    duplicateBtn.innerHTML = '<i class="fas fa-copy"></i>';
+    duplicateBtn.title = 'Duplicate';
+    duplicateBtn.setAttribute('aria-label', `Duplicate ${doc.title}`);
+    duplicateBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      duplicateDocument(doc.id);
+    });
     
     docActions.appendChild(downloadBtn);
+    docActions.appendChild(duplicateBtn);
     docActions.appendChild(deleteBtn);
     
     docItem.appendChild(docTitle);
@@ -920,7 +959,7 @@ function updateDocumentsList() {
     documentsListElement.appendChild(docItem);
   });  
   if (sortedDocs.length === 0) {
-    documentsListElement.innerHTML = '<div class="no-documents">No documents yet</div>';
+    documentsListElement.innerHTML = query ? '<div class="no-documents">No matching writings</div>' : '<div class="no-documents">No documents yet</div>';
   }
 }
 
@@ -937,6 +976,24 @@ function deleteDocument(id) {
   if (id === currentDocumentId) {
     createNewDocument(true);
   }
+}
+
+function duplicateDocument(id) {
+  if (!documents[id]) return;
+  const source = documents[id];
+  const newId = 'doc_' + Date.now();
+  const now = new Date().toISOString();
+  documents[newId] = {
+    id: newId,
+    title: `${source.title || 'Untitled Document'} Copy`,
+    content: source.content,
+    created: now,
+    updated: now
+  };
+  currentDocumentId = newId;
+  saveDocumentsToStorage();
+  loadDocument(newId);
+  updateDocumentsList();
 }
 
 function downloadCurrentDocument() {
@@ -1076,7 +1133,9 @@ function convertToMarkdown(html) {
             if (wrappedImage) {
               const alt = wrappedImage.getAttribute('alt') || '';
               const src = wrappedImage.getAttribute('src') || '';
-              return `![${alt}](${src})`;
+              const layout = getImageLayoutMetadata(node);
+              const metadata = layout ? `\n<!-- odak:image ${JSON.stringify(layout)} -->` : '';
+              return `![${alt}](${src})${metadata}`;
             }
           }
           const checkbox = node.querySelector(':scope > input[type="checkbox"]');
@@ -1140,6 +1199,21 @@ function convertToMarkdown(html) {
   }
 
   return markdown.replace(/\n{3,}/g, '\n\n').trim();
+}
+
+function getImageLayoutMetadata(wrapper) {
+  const x = parseFloat(wrapper.dataset.odakX || wrapper.style.left);
+  const y = parseFloat(wrapper.dataset.odakY || wrapper.style.top);
+  const width = parseFloat(wrapper.dataset.odakWidth || wrapper.style.width || wrapper.offsetWidth);
+  const height = parseFloat(wrapper.dataset.odakHeight || wrapper.style.height || wrapper.offsetHeight);
+  const layout = {};
+
+  if (Number.isFinite(x)) layout.x = Math.round(x);
+  if (Number.isFinite(y)) layout.y = Math.round(y);
+  if (Number.isFinite(width)) layout.width = Math.round(width);
+  if (Number.isFinite(height)) layout.height = Math.round(height);
+
+  return Object.keys(layout).length ? layout : null;
 }
 
 
@@ -1215,12 +1289,27 @@ function sanitizeUrl(url, allowDataImage = false) {
   return '#';
 }
 
+function handleEditorLinkClick(e) {
+  const link = e.target.closest('a[href]');
+  if (!link || !editor.contains(link)) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (e.button !== 0 || (!e.ctrlKey && !e.metaKey)) return;
+
+  const href = sanitizeUrl(link.getAttribute('href') || '');
+  if (!href || href === '#') return;
+
+  window.open(href, '_blank', 'noopener,noreferrer');
+}
+
 function renderInlineMarkdown(markdown) {
   const tokens = [];
   let escaped = escapeHtml(markdown)
     .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (match, alt, src) => {
       const token = `\u0000${tokens.length}\u0000`;
-      tokens.push(`<img src="${escapeHtml(sanitizeUrl(src, true))}" alt="${escapeHtml(alt)}" data-draggable>`);
+      tokens.push(renderImageMarkdown(alt, src));
       return token;
     })
     .replace(/(?<!!)\[([^\]]+)\]\(([^)\s]+)\)/g, (match, text, href) => {
@@ -1238,6 +1327,43 @@ function renderInlineMarkdown(markdown) {
   });
 
   return escaped;
+}
+
+function parseOdakImageMetadata(line) {
+  const match = line.match(/^<!--\s*odak:image\s+({.*})\s*-->$/);
+  if (!match) return null;
+
+  try {
+    const parsed = JSON.parse(match[1]);
+    const metadata = {};
+    ['x', 'y', 'width', 'height'].forEach(key => {
+      const value = Number(parsed[key]);
+      if (Number.isFinite(value)) {
+        metadata[key] = Math.round(value);
+      }
+    });
+    return Object.keys(metadata).length ? metadata : null;
+  } catch (error) {
+    console.warn('Ignoring invalid Odak image metadata.', error);
+    return null;
+  }
+}
+
+function renderImageMarkdown(alt, src, metadata = null) {
+  const attrs = [
+    `src="${escapeHtml(sanitizeUrl(src, true))}"`,
+    `alt="${escapeHtml(alt)}"`,
+    'data-draggable'
+  ];
+
+  if (metadata) {
+    if (Number.isFinite(metadata.x)) attrs.push(`data-odak-x="${metadata.x}"`);
+    if (Number.isFinite(metadata.y)) attrs.push(`data-odak-y="${metadata.y}"`);
+    if (Number.isFinite(metadata.width)) attrs.push(`data-odak-width="${metadata.width}"`);
+    if (Number.isFinite(metadata.height)) attrs.push(`data-odak-height="${metadata.height}"`);
+  }
+
+  return `<img ${attrs.join(' ')}>`;
 }
 
 function convertMarkdownToHtml(markdown) {
@@ -1280,6 +1406,20 @@ function convertMarkdownToHtml(markdown) {
     // Horizontal Rule
     if (line === '---') {
       html += '<hr>';
+      continue;
+    }
+
+    if (parseOdakImageMetadata(line)) {
+      continue;
+    }
+
+    const imageLineMatch = line.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/);
+    if (imageLineMatch) {
+      const metadata = parseOdakImageMetadata((lines[i + 1] || '').trim());
+      html += `<div dir="auto">${renderImageMarkdown(imageLineMatch[1], imageLineMatch[2], metadata)}</div>`;
+      if (metadata) {
+        i += 1;
+      }
       continue;
     }
 
@@ -1487,6 +1627,14 @@ function closeInfoPopup() {
   infoPopup.classList.add('hidden');
 }
 
+function closeOpenPopups() {
+  [listPopup, settingsPopup, document.getElementById('info-popup')].forEach(popup => {
+    if (popup) {
+      popup.classList.add('hidden');
+    }
+  });
+}
+
 function handleLetsGo() {
   localStorage.setItem('odak_has_seen_info', 'true');
   closeInfoPopup();
@@ -1511,6 +1659,7 @@ document.addEventListener('DOMContentLoaded', () => {
   editor.addEventListener('click', () => {
     saveCurrentDocumentContent();
   });
+  editor.addEventListener('click', handleEditorLinkClick);
   
   // Add event listener for keyboard shortcuts
   document.addEventListener('keydown', handleShortcuts);
@@ -1593,6 +1742,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('download-all-btn').addEventListener('click', downloadAllDocuments);
+
+  document.getElementById('documents-search').addEventListener('input', (e) => {
+    documentSearchQuery = e.target.value;
+    updateDocumentsList();
+  });
+
+  document.getElementById('documents-sort').addEventListener('change', (e) => {
+    documentSortMode = e.target.value;
+    updateDocumentsList();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeOpenPopups();
+    }
+  });
 
   document.addEventListener('click', (e) => {
     const volumePopup = document.getElementById('volume-popup');

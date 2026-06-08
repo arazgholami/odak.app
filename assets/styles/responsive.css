@@ -1,5 +1,5 @@
 @media (max-width: 946px) {
-  .formatting-shortcuts, .status-link {
+  .status-link {
     display: none;
   }
 }
@@ -13,6 +13,40 @@
     width: 90%;
     max-width: 90vw;
     font-size: 0.9rem;
+    max-height: 82vh;
+  }
+
+  .popup-header {
+    padding: 12px 14px;
+  }
+
+  .library-controls {
+    grid-template-columns: 1fr;
+    padding: 0 14px 10px;
+  }
+
+  .library-summary {
+    padding: 0 14px 6px;
+  }
+
+  #documents-list {
+    padding: 10px 14px 5px;
+  }
+
+  .document-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 10px;
+  }
+
+  .document-date {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-right: 0;
+  }
+
+  .document-actions {
+    grid-column: 2;
+    grid-row: 1 / span 2;
   }
 
   #editor {
@@ -39,5 +73,32 @@
   #toolbar button {
     margin: 0 4px;
     flex: 0 0 auto;
+  }
+
+  #status-bar {
+    gap: 8px;
+    padding: 6px 10px;
+  }
+
+  .status-left {
+    min-width: 0;
+  }
+
+  .status-right {
+    flex: 0 0 auto;
+  }
+
+  .logo-link {
+    margin-right: 8px;
+  }
+
+  .status-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .action-btn {
+    padding: 7px 10px;
+    margin-left: 6px;
   }
 }

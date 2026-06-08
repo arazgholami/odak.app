@@ -74,6 +74,24 @@
       document.head.appendChild(style);
     }
 
+    function parseNumber(value, fallback) {
+      const number = parseFloat(value);
+      return Number.isFinite(number) ? number : fallback;
+    }
+
+    function persistWrapperLayout(wrapper) {
+      wrapper.dataset.odakX = String(Math.round(parseNumber(wrapper.style.left, wrapper.offsetLeft)));
+      wrapper.dataset.odakY = String(Math.round(parseNumber(wrapper.style.top, wrapper.offsetTop)));
+      wrapper.dataset.odakWidth = String(Math.round(wrapper.offsetWidth));
+      wrapper.dataset.odakHeight = String(Math.round(wrapper.offsetHeight));
+    }
+
+    function requestDocumentSave() {
+      if (typeof window.saveCurrentDocumentContent === 'function') {
+        window.saveCurrentDocumentContent();
+      }
+    }
+
     function bindDragResize(wrapper) {
         if (boundWrappers.has(wrapper)) return;
         boundWrappers.add(wrapper);
@@ -112,18 +130,25 @@
             const newHeight = newWidth / aspectRatio;
             wrapper.style.width = newWidth + 'px';
             wrapper.style.height = newHeight + 'px';
+            persistWrapperLayout(wrapper);
           }
       
           if (isDragging) {
             wrapper.style.left = (e.clientX - offsetX) + 'px';
             wrapper.style.top = (e.clientY - offsetY) + 'px';
+            persistWrapperLayout(wrapper);
           }
         });
       
         document.addEventListener('mouseup', () => {
+          const changed = isDragging || isResizing;
           isDragging = false;
           isResizing = false;
           document.body.classList.remove('imglib-dragging');
+          if (changed) {
+            persistWrapperLayout(wrapper);
+            requestDocumentSave();
+          }
         });
       }
       
@@ -146,13 +171,24 @@
         const naturalWidth = img.naturalWidth || img.width;
         const naturalHeight = img.naturalHeight || img.height;
         const aspectRatio = naturalWidth && naturalHeight ? naturalWidth / naturalHeight : 1;
-        const targetWidth = img.width || 200;
-        const targetHeight = targetWidth / aspectRatio;
+        const layout = {
+          x: parseNumber(img.dataset.odakX, img.offsetLeft),
+          y: parseNumber(img.dataset.odakY, img.offsetTop),
+          width: parseNumber(img.dataset.odakWidth, img.width || 200),
+          height: parseNumber(img.dataset.odakHeight, null)
+        };
+        if (!layout.height) {
+          layout.height = layout.width / aspectRatio;
+        }
   
-        wrapper.style.width = targetWidth + 'px';
-        wrapper.style.height = targetHeight + 'px';
-        wrapper.style.top = img.offsetTop + 'px';
-        wrapper.style.left = img.offsetLeft + 'px';
+        wrapper.dataset.odakX = String(Math.round(layout.x));
+        wrapper.dataset.odakY = String(Math.round(layout.y));
+        wrapper.dataset.odakWidth = String(Math.round(layout.width));
+        wrapper.dataset.odakHeight = String(Math.round(layout.height));
+        wrapper.style.width = layout.width + 'px';
+        wrapper.style.height = layout.height + 'px';
+        wrapper.style.top = layout.y + 'px';
+        wrapper.style.left = layout.x + 'px';
   
         // Clone and style image
         const newImg = img.cloneNode();
@@ -170,6 +206,7 @@
         deleteBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           wrapper.remove();
+          requestDocumentSave();
         });
   
         wrapper.appendChild(newImg);

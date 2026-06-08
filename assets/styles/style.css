@@ -96,13 +96,21 @@ body[data-theme="odak"] #editor {
   font-size: 1.1rem;
   margin: 0 8px;
   padding: 5px 10px;
+  min-width: 38px;
+  min-height: 38px;
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.2s;
 }
 
-#toolbar button:hover {
+#toolbar button:hover,
+#toolbar button:focus-visible,
+.close-popup:focus-visible,
+.document-actions button:focus-visible,
+.action-btn:focus-visible {
   background-color: var(--button-hover);
+  outline: 2px solid var(--highlight-color);
+  outline-offset: 2px;
 }
 
 #volume-popup {
@@ -272,8 +280,8 @@ body[data-theme="odak"] #editor {
 .theme-btn {
   background: var(--bg-color);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 5px 15px;
+  border-radius: 6px;
+  padding: 7px 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -283,7 +291,6 @@ body[data-theme="odak"] #editor {
 }
 
 .theme-btn:hover {
-  transform: translateY(-2px);
   border: 1px solid var(--border-color);
 }
 
@@ -557,6 +564,7 @@ datalist {
   flex-direction: column;
   padding-bottom: 10px;
   user-select: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
 }
 
 .popup.hidden {
@@ -584,6 +592,35 @@ datalist {
   color: var(--toolbar-color);
   font-size: 1.2rem;
   cursor: pointer;
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+}
+
+.popup-logo {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.library-controls {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(150px, auto) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 10px;
+}
+
+.library-controls .action-btn {
+  margin-left: 0;
+  white-space: nowrap;
+}
+
+.library-summary {
+  padding: 0 20px 6px;
+  color: #888;
+  font-size: 0.85rem;
 }
 
 #documents-list {
@@ -594,8 +631,9 @@ datalist {
 }
 
 .document-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
   align-items: center;
   padding: 10px 15px 10px;
   cursor: pointer;
@@ -617,13 +655,14 @@ datalist {
 
 .document-title {
   font-size: 1.1rem;
-  flex-grow: 1;
   padding: 2px 4px;
   border-radius: 3px;
   transition: background-color 0.2s;
   overflow: hidden;
-  height: 30px;
-  width: 300px;
+  min-height: 30px;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .document-title[contenteditable=true] {
@@ -640,14 +679,17 @@ datalist {
 
 .document-actions {
   display: flex;
+  gap: 4px;
 }
 
 .document-actions button {
   background: none;
   border: none;
   color: var(--toolbar-color);
-  margin-left: 10px;
   cursor: pointer;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
 }
 
 .popup-footer {
@@ -685,6 +727,18 @@ datalist {
   margin-right: 20px;
 }
 
+.status-logo {
+  width: 28px;
+  height: 28px;
+  margin-right: 8px;
+  flex: 0 0 auto;
+}
+
+.title {
+  display: block;
+  line-height: 1.1;
+}
+
 .status-link {
   margin-right: 12px;
   color: var(--status-link-color);
@@ -712,7 +766,7 @@ datalist {
   color: var(--bg-color);
   border: none;
   border-radius: 4px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   margin-left: 10px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -722,19 +776,6 @@ datalist {
 .action-btn:hover {
   background-color: var(--highlight-color-hover);
   color: var(--bg-color);
-}
-
-.formatting-shortcuts {
-  font-size: 12px;
-}
-
-.formatting-shortcuts code {
-  background-color: var(--manual-code);
-  color: var(--btn-light-text, #242424);
-  font-size: 12px;
-  padding: 4px 5px 2px;
-  font-family: 'Vazir';
-  border-radius: 4px;
 }
 
 [dir="rtl"] {
@@ -1021,9 +1062,10 @@ body {
   background: var(--button-hover);
 }
 
-svg {
-  width: 40px;
-  height: auto;
-  margin-right: 8px;
-  fill: blue;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
