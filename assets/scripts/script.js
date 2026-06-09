@@ -40,7 +40,7 @@ Visit [Odak.app](https://odak.app) or [email the author](mailto:contact@odak.app
 ### Image
 
 ![Odak logo](https://odak.app/assets/images/odak.svg)
-
+<!-- odak:image {"x":707,"y":279,"width":86,"height":86} -->
 ## Lists
 
 - Focused writing

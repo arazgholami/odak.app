@@ -1,6 +1,6 @@
 /**
  * WYSIWYG Markdown Editor
- * v=3.0
+ * v=4.0
  * A lightweight, real-time markdown editor with live rendering and LTR-RTL support
  * Usage: MarkdownEditor.init('your-div-id');
  * Author: Araz Gholami @arazgholami
@@ -66,6 +66,7 @@ class MarkdownEditor {
         if (selection.rangeCount === 0) return;
 
         const range = selection.getRangeAt(0);
+        this.normalizeCheckboxPlaceholder(range);
 
         if (range.startContainer === this.editor ||
             (range.startContainer.nodeType === Node.TEXT_NODE && range.startContainer.parentNode === this.editor)) {
@@ -323,6 +324,31 @@ class MarkdownEditor {
         return textNodes.join('');
     }
 
+    normalizeCheckboxPlaceholder(range) {
+        if (range.startContainer.nodeType !== Node.TEXT_NODE) return;
+
+        const textNode = range.startContainer;
+        if (!textNode.textContent.includes('\u200B')) return;
+
+        const checkboxContainer = this.findCheckboxContainer(textNode.parentElement);
+        if (!checkboxContainer) return;
+
+        const normalizedText = textNode.textContent.replace(/\u200B/g, '');
+        if (normalizedText.length === 0) return;
+
+        const offset = Math.max(
+            0,
+            range.startOffset - (textNode.textContent.slice(0, range.startOffset).match(/\u200B/g) || []).length
+        );
+
+        textNode.textContent = normalizedText;
+        range.setStart(textNode, Math.min(offset, textNode.textContent.length));
+        range.collapse(true);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
     createNewCheckboxItem(currentContainer) {
         const div = document.createElement('div');
         div.setAttribute('dir', 'auto');
@@ -330,7 +356,7 @@ class MarkdownEditor {
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         
-        const textNode = document.createTextNode('');
+        const textNode = document.createTextNode('\u200B');
         
         div.appendChild(checkbox);
         div.appendChild(textNode);
@@ -341,7 +367,7 @@ class MarkdownEditor {
             currentContainer.parentNode.appendChild(div);
         }
         
-        this.setCursorAfter(checkbox);
+        this.setCursorAtEnd(textNode);
     }
 
     handleKeyUp(e) {
@@ -501,14 +527,15 @@ class MarkdownEditor {
             checkbox.checked = true;
         }
 
-        const labelText = document.createTextNode(content);
+        const hasContent = content.length > 0;
+        const labelText = document.createTextNode(hasContent ? content : '\u200B');
 
         const parent = textNode.parentNode;
         parent.insertBefore(checkbox, textNode);
         parent.insertBefore(labelText, textNode);
         parent.removeChild(textNode);
 
-        this.setCursorAfter(labelText);
+        this.setCursorAtEnd(labelText);
     }
 
     createLink(text, url, fullText, textNode) {
